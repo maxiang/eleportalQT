@@ -1,0 +1,9 @@
+1: Install gstreamer-1.0-msvc-x86_64-1.16.2.msi,
+Install gstreamer-1.0-devel-msvc-x86_64-1.16.2.msi
+2: Set the windows environment variable
+GSTREAMER_1_0_ROOT_X86_64=C:\gstreamer\1.0\x86_64\
+PKG_CONFIG_PATH=C:\gstreamer\1.0\x86_64\lib\pkgconfig
+C:\gstreamer\1.0\x86_64\bin added to %path%
+
+3: gstqmlgl.dll is a plugin I compiled. It needs to be added to C:\gstreamer\1.0\x86_64\lib\gstreamer-1.0
+4：libardusub.dll，libsqlite3-0.dll addto C:\gstreamer\1.0\x86_64\bin
