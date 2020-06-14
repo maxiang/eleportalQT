@@ -28,7 +28,8 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     void resizeWindowsManual();
-
+    void ResizeToolBar();
+    void AddToolBarSpacer(QToolBar* pToolBar=nullptr,int width=-1);
 private slots:
     void updateVehicleData();
     void manualControl();
@@ -41,14 +42,16 @@ private slots:
 
     void modeComboBox_currentIndexChanged(int index);
 
-    void armCheckBox_stateChanged(int state);
+    void armCheckBox_stateChanged(bool checked);
+
+    void on_actionSonarGps_triggered();
 
 private:
     Ui::MainWindow *ui;
 
     VideoReceiver *videoReceiver;
 
-    QCheckBox *armCheckBox;
+    QPushButton *armCheckBox;
     QPushButton *modeComboBox;               //Changing Combobox to Button
     //QComboBox *modeComboBox;
     

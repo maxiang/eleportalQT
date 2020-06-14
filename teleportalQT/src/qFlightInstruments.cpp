@@ -59,7 +59,7 @@ void QADI::paintEvent(QPaintEvent *)
 //    QBrush bgSky(QColor(48,172,220));
 //    QBrush bgGround(QColor(247,168,21));
     QBrush bgSky(Qt::blue);
-    QBrush bgGround(Qt::green);
+    QBrush bgGround(QColor(255, 85, 0));
 
     QPen   whitePen(Qt::white);
     QPen   blackPen(Qt::black);

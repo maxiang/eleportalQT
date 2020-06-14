@@ -35,6 +35,9 @@
     </property>
     <item>
      <widget class="QStackedWidget" name="mainStackedWidget">
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
       <widget class="QWidget" name="videoPage">
        <widget class="QQuickWidget" name="quickWidget">
         <property name="geometry">
@@ -52,8 +55,8 @@
        <widget class="QADI" name="qADI" native="true">
         <property name="geometry">
          <rect>
-          <x>860</x>
-          <y>30</y>
+          <x>1030</x>
+          <y>200</y>
           <width>160</width>
           <height>160</height>
          </rect>
@@ -110,6 +113,7 @@
     <bool>false</bool>
    </attribute>
    <addaction name="actionVideo"/>
+   <addaction name="actionSonarGps"/>
    <addaction name="actionMenu"/>
   </widget>
   <widget class="QToolBar" name="vehicleToolBar">
@@ -192,6 +196,21 @@
    </property>
    <property name="text">
     <string>Menu</string>
+   </property>
+  </action>
+  <action name="actionSonarGps">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../qrc/assets.qrc">
+     <normaloff>:/assets/icons/sonar-icon.png</normaloff>:/assets/icons/sonar-icon.png</iconset>
+   </property>
+   <property name="text">
+    <string>SonarGps</string>
+   </property>
+   <property name="toolTip">
+    <string>SonarGps</string>
    </property>
   </action>
  </widget>

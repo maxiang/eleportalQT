@@ -1,5 +1,5 @@
 #include "mainwindow.h"
-#include "./ui_mainwindow.h"
+#include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -80,23 +80,29 @@ MainWindow::~MainWindow()
 
 void MainWindow::setupToolBars()
 {
+    //ui->vehicleToolBar->addAction(new QAction(QIcon("../assets/icons/video.svg"),"SonarGps"));
     QList<QAction *> actionListDisarm;
     // actionListDisarm.append(ui->actionDisarm);
     ui->vehicleToolBar->setFocusPolicy(Qt::NoFocus);        //FOCUS FIX
     ui->vehicleToolBar->addActions(actionListDisarm);
 
-    armCheckBox = new QCheckBox(this);
-    armCheckBox->setText("Arm");
+    armCheckBox = new QPushButton(this);
+     armCheckBox->setText("CLICK TO START");
+     armCheckBox->setCheckable(true);
+     armCheckBox->setChecked(false);
+    armCheckBox->setStyleSheet("color: rgb(0, 206, 0);font: 87 12pt \"Arial\";");
     armCheckBox->setFocusPolicy(Qt::NoFocus);               //FOCUS FIX
+    AddToolBarSpacer(ui->vehicleToolBar);
     ui->vehicleToolBar->addWidget(armCheckBox);
-    QObject::connect(armCheckBox, &QCheckBox::stateChanged,
-                     this, &MainWindow::armCheckBox_stateChanged);
+    AddToolBarSpacer(ui->vehicleToolBar);
+    connect(armCheckBox,SIGNAL(clicked(bool)),
+                     this,SLOT(armCheckBox_stateChanged(bool)));
 
     ui->vehicleToolBar->addSeparator();
-
+    AddToolBarSpacer(ui->tabsToolBar,100);
     QLabel *modeLable = new QLabel(this);
     modeLable->setText("Mode: ");
-    ui->vehicleToolBar->addWidget(modeLable);
+    ui->tabsToolBar->addWidget(modeLable);
 
     //Vehicle Mode Change using ComboBox
 
@@ -117,13 +123,13 @@ void MainWindow::setupToolBars()
     modeComboBox->setFocusPolicy(Qt::NoFocus);
     modeComboBox->show();
     connect (modeComboBox , SIGNAL(clicked()) , this , SLOT(on_modeBt_clicked()) );
-    ui->vehicleToolBar->addWidget(modeComboBox);
+    ui->tabsToolBar->addWidget(modeComboBox);
    
 
 
 
     // status toolbar
-    QLabel *yawLabel = new QLabel("Yaw: ", this);
+    QLabel *yawLabel = new QLabel("Compass: ", this);
     yawLabel->setFocusPolicy(Qt::NoFocus);          //FOCUS FIX
     yawLabelValue = new QLabel("0.00", this);
     yawLabelValue->setFocusPolicy(Qt::NoFocus);     //FOCUS FIX
@@ -137,6 +143,11 @@ void MainWindow::setupToolBars()
     rollLabel->setFocusPolicy(Qt::NoFocus);             //FOCUS FIX
     rollLabelValue = new QLabel("0.00", this);
     rollLabelValue->setFocusPolicy(Qt::NoFocus);        //FOCUS FIX
+  //hide
+    pitchLabel->setVisible(false);
+    pitchLabelValue->setVisible(false);
+    rollLabel->setVisible(false);
+    rollLabelValue->setVisible(false);
 
     QLabel *depthLabel = new QLabel("Depth: ", this);
     depthLabel->setFocusPolicy(Qt::NoFocus);            //FOCUS FIX
@@ -148,12 +159,8 @@ void MainWindow::setupToolBars()
     rollLabelValue->setFixedWidth(50);
     depthLabelValue->setFixedWidth(50);	
    
-    QWidget *spacer = new QWidget(this);
-    spacer->setFocusPolicy(Qt::NoFocus);                //FOCUS FIX
-    spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    ui->statusToolBar->setFocusPolicy(Qt::NoFocus);     //FOCUS FIX
-    ui->statusToolBar->addWidget(spacer);
 
+    AddToolBarSpacer(ui->statusToolBar);
     ui->statusToolBar->addWidget(yawLabel);
     ui->statusToolBar->addWidget(yawLabelValue);
     ui->statusToolBar->addWidget(pitchLabel);
@@ -170,6 +177,7 @@ void MainWindow::setupToolBars()
     ui->statusToolBar->addWidget(bannerLabel);
 
     ui->menuPage->setStyleSheet("border-image: url(:/assets/keyboardControls.png);");
+    ResizeToolBar();
 }
 
 
@@ -213,7 +221,7 @@ void MainWindow::updateVehicleData()
 
          	armCheckBox->setChecked(true);
             m_modeIndex = 1;                                     //Changing Combobox for Button
-            armCheckBox_stateChanged(Qt::Checked);
+            armCheckBox_stateChanged(true);
             modeComboBox_currentIndexChanged(m_modeIndex);      //Changing Combobox for Button
 		    firstRun = true;
 	}
@@ -259,7 +267,7 @@ void MainWindow::updateVehicleData()
 void MainWindow::manualControl()
 {
         //Main Vehicle Control Loop
-    if (armCheckBox->checkState() == Qt::Checked &&
+    if (armCheckBox->isChecked()&&
         AS::as_api_check_vehicle(currentVehicle))
     {
         AS::as_api_manual_control(manual_control.x, manual_control.y,
@@ -280,7 +288,36 @@ void MainWindow::resizeWindowsManual()
     ui->quickWidget->setGeometry(0, 0, m_width, ui->videoPage->height());
 
     ui->qCompass->setGeometry(m_width - 160, 0, 160, 160);
-    ui->qADI->setGeometry(m_width - 320, 0, 160, 160);
+    ui->qADI->setGeometry(m_width - 160, 160, 160, 160);
+    ResizeToolBar();
+}
+
+void MainWindow::ResizeToolBar()
+{
+    //ui->vehicleToolBar->
+    //ui->statusToolBar
+
+    ui->tabsToolBar->setFixedWidth( ui->centralwidget->width()/3);
+    ui->vehicleToolBar->setFixedWidth( ui->centralwidget->width()/3);
+    ui->statusToolBar->setFixedWidth( ui->centralwidget->width()/3);
+}
+
+void MainWindow::AddToolBarSpacer(QToolBar *pToolBar,int width)
+{
+    QWidget *spacer = new QWidget(this);
+    spacer->setFocusPolicy(Qt::NoFocus);                //FOCUS FIX
+    if(width<0)
+    {
+        spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+    }
+    else
+    {
+        spacer->setFixedWidth(width);
+
+    }
+    pToolBar->setFocusPolicy(Qt::NoFocus);     //FOCUS FIX
+    pToolBar->addWidget(spacer);
 }
 
 void MainWindow::resizeEvent(QResizeEvent *event)
@@ -300,10 +337,10 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 
     if (event->key() == Qt::Key_W)
     {
-        if (armCheckBox->checkState() == Qt::Unchecked)
+        if (!armCheckBox->isChecked())
         {
             armCheckBox->setChecked(true);
-            armCheckBox_stateChanged(Qt::Checked);   
+            armCheckBox_stateChanged(true);
             return;
          }
         
@@ -313,10 +350,10 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     }
     else if (event->key() == Qt::Key_S)
     {
-        if (armCheckBox->checkState() == Qt::Unchecked)
+        if (!armCheckBox->isChecked())
         {
             armCheckBox->setChecked(true);
-            armCheckBox_stateChanged(Qt::Checked);   
+            armCheckBox_stateChanged(true);
             return;
          }
         qDebug() << "You Pressed Key S";
@@ -325,10 +362,10 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     }
     else if (event->key() == Qt::Key_A)
     {
-        if (armCheckBox->checkState() == Qt::Unchecked)
+        if (!armCheckBox->isChecked())
         {
             armCheckBox->setChecked(true);
-            armCheckBox_stateChanged(Qt::Checked);   
+            armCheckBox_stateChanged(true);
             return;
          }
         qDebug() << "You Pressed Key A";
@@ -348,10 +385,10 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     }
     else if (event->key() == Qt::Key_D)
     {
-        if (armCheckBox->checkState() == Qt::Unchecked)
+        if (!armCheckBox->isChecked())
         {
             armCheckBox->setChecked(true);
-            armCheckBox_stateChanged(Qt::Checked);   
+            armCheckBox_stateChanged(true);
             return;
          }
         qDebug() << "You Pressed Key D";
@@ -371,10 +408,10 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     }
     else if (event->key() == Qt::Key_Up)
     {
-        if (armCheckBox->checkState() == Qt::Unchecked)
+        if (!armCheckBox->isChecked())
         {
             armCheckBox->setChecked(true);
-            armCheckBox_stateChanged(Qt::Checked);   
+            armCheckBox_stateChanged(true);
             return;
          }
         qDebug() << "You Pressed Key Up";
@@ -383,10 +420,10 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     }
     else if (event->key() == Qt::Key_Down)
     {
-        if (armCheckBox->checkState() == Qt::Unchecked)
+        if (!armCheckBox->isChecked())
         {
             armCheckBox->setChecked(true);
-            armCheckBox_stateChanged(Qt::Checked);   
+            armCheckBox_stateChanged(true);
             return;
          }
         qDebug() << "You Pressed Key Down";
@@ -395,10 +432,10 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     }
     else if (event->key() == Qt::Key_Left)
     {
-        if (armCheckBox->checkState() == Qt::Unchecked)
+        if (!armCheckBox->isChecked())
         {
             armCheckBox->setChecked(true);
-            armCheckBox_stateChanged(Qt::Checked);   
+            armCheckBox_stateChanged(true);
             return;
          }
         qDebug() << "You Pressed Key Left";
@@ -407,10 +444,10 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     }
     else if (event->key() == Qt::Key_Right)
     {
-        if (armCheckBox->checkState() == Qt::Unchecked)
+        if (!armCheckBox->isChecked())
         {
             armCheckBox->setChecked(true);
-            armCheckBox_stateChanged(Qt::Checked);   
+            armCheckBox_stateChanged(true);
             return;
          }
         qDebug() << "You Pressed Key Right";
@@ -422,10 +459,10 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 	
 	else if (event->key() == Qt::Key_R)
      {
-         if (armCheckBox->checkState() == Qt::Unchecked)
+        if (!armCheckBox->isChecked())
         {
             armCheckBox->setChecked(true);
-            armCheckBox_stateChanged(Qt::Checked);   
+            armCheckBox_stateChanged(true);
             return;
          }
          qDebug() << "You Pressed Key R";
@@ -433,10 +470,10 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
      }
      else if (event->key() == Qt::Key_F)
      {
-         if (armCheckBox->checkState() == Qt::Unchecked)
+        if (!armCheckBox->isChecked())
         {
             armCheckBox->setChecked(true);
-            armCheckBox_stateChanged(Qt::Checked);   
+            armCheckBox_stateChanged(true);
             return;
          }
          qDebug() << "You Pressed Key F";
@@ -444,10 +481,10 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
      }
    else if (event->key() == Qt::Key_T)
      {
-         if (armCheckBox->checkState() == Qt::Unchecked)
+        if (!armCheckBox->isChecked())
         {
             armCheckBox->setChecked(true);
-            armCheckBox_stateChanged(Qt::Checked);   
+            armCheckBox_stateChanged(true);
             return;
          }
          qDebug() << "You Pressed Key Plus";
@@ -455,10 +492,10 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
      }
      else if (event->key() == Qt::Key_G)
      {
-         if (armCheckBox->checkState() == Qt::Unchecked)
+        if (!armCheckBox->isChecked())
         {
             armCheckBox->setChecked(true);
-            armCheckBox_stateChanged(Qt::Checked);   
+            armCheckBox_stateChanged(true);
             return;
          }
          qDebug() << "You Pressed Key Minus";
@@ -690,22 +727,26 @@ void MainWindow::modeComboBox_currentIndexChanged(int index)
     }
 }
 
-void MainWindow::armCheckBox_stateChanged(int state)
+void MainWindow::armCheckBox_stateChanged(bool checked)
 {
             //Change vehicle arm / disarm
     if (!AS::as_api_check_vehicle(currentVehicle))
     {
         qDebug() << "vehicle: " << currentVehicle << "is not ready!";
-        armCheckBox->setCheckState(Qt::Unchecked);
+        armCheckBox->setChecked(false);
+        armCheckBox->setStyleSheet("color: rgb(0, 206, 0);font: 87 12pt \"Arial\";");
+        armCheckBox->setText("CLICK TO START");
         return;
     }
 
-    if (state == Qt::Checked)
+    if (armCheckBox->isChecked())
     {
         AS::as_api_vehicle_arm(currentVehicle, 1);
+        armCheckBox->setStyleSheet("color: rgb(255, 0, 0);font: 87 12pt \"Arial\";");
+        armCheckBox->setText("ARMED");
         qDebug() << "ARM";
     }
-    else if (state == Qt::Unchecked)
+    else
     {
         // set manual control value to zero
         manual_control.x = 0;
@@ -715,7 +756,13 @@ void MainWindow::armCheckBox_stateChanged(int state)
         manual_control.buttons = 0;
 
         AS::as_api_vehicle_disarm(currentVehicle, 1);
-
+        armCheckBox->setStyleSheet("color: rgb(0, 206, 0);font: 87 12pt \"Arial\";");
+        armCheckBox->setText("CLICK TO START");
         qDebug() << "DISARM";
     }
+}
+
+void MainWindow::on_actionSonarGps_triggered()
+{
+
 }

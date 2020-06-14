@@ -82,7 +82,7 @@ void VideoReceiver::start(QQuickWidget *quickWidget)
     GstElement *queue2 = gst_element_factory_make("queue", "queue-cv-main");
     GstElement *glupload = gst_element_factory_make("glupload", "glupload");
     GstElement *glcolorconvert = gst_element_factory_make("glcolorconvert", "glcolorconvert");
-    GstElement *qmlsink = gst_element_factory_make("qmlglsink","qmlglsink");
+    GstElement *qmlsink = gst_element_factory_make("qmlglsink",NULL);
     /* the plugin must be loaded before loading the qml file to register the
      * GstGLVideoItem qml item */
     

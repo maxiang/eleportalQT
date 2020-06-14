@@ -1,4 +1,4 @@
-QT       += core gui quickwidgets
+QT       += core gui quickwidgets qml network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -54,6 +54,8 @@ LIBS += $${GstreamerDir}/lib/gstvideo-1.0.lib
 LIBS += $${GstreamerDir}/lib/gobject-2.0.lib
 LIBS += $${GstreamerDir}/lib/gthread-2.0.lib
 LIBS += $${GstreamerDir}/lib/gio-2.0.lib
+LIBS += $${GstreamerDir}/lib/intl.lib
+
 INCLUDEPATH += $$PWD/dependencies/inc
 DEPENDPATH  += $$PWD/dependencies/inc
 LIBS += $$PWD/dependencies/lib/libardusub.dll.a
