@@ -8,5 +8,8 @@
         <file>../assets/icons/video.svg</file>
         <file>../assets/logo/Logo-Large.png</file>
         <file>../assets/icons/sonar-icon.png</file>
+        <file>../assets/maps.qml</file>
+        <file>../assets/icons/help.png</file>
+        <file>../assets/icons/map.png</file>
     </qresource>
 </RCC>

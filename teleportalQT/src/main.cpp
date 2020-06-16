@@ -8,10 +8,7 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     MainWindow w;
     w.showMaximized();
-  //  w.show();
-    //(Qt::FramelessWindowHint)
-    w.setWindowFlags(Qt::FramelessWindowHint);
-    //w.showFullScreen();                     //FULL SCREEN
+    w.setWindowFlags(Qt::FramelessWindowHint);      //ENABLE FULLSCREEN WINDOW FOR APP TO RUN
     w.resizeWindowsManual();
     w.show();
     return a.exec();

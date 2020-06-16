@@ -36,7 +36,7 @@
     <item>
      <widget class="QStackedWidget" name="mainStackedWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="videoPage">
        <widget class="QQuickWidget" name="quickWidget">
@@ -80,6 +80,17 @@
        </widget>
       </widget>
       <widget class="QWidget" name="menuPage"/>
+      <widget class="QWidget" name="mapPage">
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QQuickWidget" name="quickWidget_2">
+          <property name="resizeMode">
+           <enum>QQuickWidget::SizeRootObjectToView</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
      </widget>
     </item>
    </layout>
@@ -192,7 +203,7 @@
    </property>
    <property name="icon">
     <iconset resource="../qrc/assets.qrc">
-     <normaloff>:/assets/icons/menu.svg</normaloff>:/assets/icons/menu.svg</iconset>
+     <normaloff>:/assets/icons/help.png</normaloff>:/assets/icons/help.png</iconset>
    </property>
    <property name="text">
     <string>Menu</string>
@@ -204,7 +215,7 @@
    </property>
    <property name="icon">
     <iconset resource="../qrc/assets.qrc">
-     <normaloff>:/assets/icons/sonar-icon.png</normaloff>:/assets/icons/sonar-icon.png</iconset>
+     <normaloff>:/assets/icons/map.png</normaloff>:/assets/icons/map.png</iconset>
    </property>
    <property name="text">
     <string>SonarGps</string>

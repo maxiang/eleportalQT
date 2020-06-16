@@ -73,7 +73,7 @@ INCLUDEPATH += $$PWD/dependencies/ping-cpp/src/message
 
 CONFIG(debug, debug|release) {
 LIBS += $$PWD/dependencies/lib/debug/libDEVICE.a
-LIBS += $$PWD/dependencies/lib/debug/libfmt.a
+LIBS += $$PWD/dependencies/lib/debug/libfmtd.a
 LIBS += $$PWD/dependencies/lib/debug/libHAL.a
 
 } else {
