@@ -53,9 +53,9 @@ void PingSensor::connectLink()
     LinkConfiguration conConf;
     conConf.setName("Ping1D");
     conConf.setType(LinkType::Udp);
-   // conf.setArgs({"192.168.2.2","9090"});
+   conConf.setArgs({"192.168.2.2","9090"});
     conConf.setDeviceType(PingDeviceType::PING1D);
-    conConf.setArgs({"127.0.0.1","6676"});
+   // conConf.setArgs({"127.0.0.1","6676"});
     if (_abstractLink->isOpen()) {
         _abstractLink->finishConnection();
     }
