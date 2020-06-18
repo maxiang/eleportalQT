@@ -2,7 +2,7 @@ QT       += core gui quickwidgets qml network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-CONFIG += c++14
+CONFIG +=  c++17
 #subdir
 INCLUDEPATH += $$PWD/src/inc
 # The following define makes your compiler emit warnings if you use
@@ -19,14 +19,15 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     src/main.cpp \
     src/mainwindow.cpp\
+    src/pingsensor.cpp \
     src/qFlightInstruments.cpp\
     src/VideoReceiver.cpp
 
 HEADERS += \
     src/inc/mainwindow.h\
     src/inc/VideoReceiver.h\
-    src/inc/qFlightInstruments.h
-    src/inc/ardusub_api_test.h
+    src/inc/qFlightInstruments.h \
+    src/inc/pingsensor.h
 
 FORMS += \
     ui/mainwindow.ui
@@ -59,25 +60,5 @@ LIBS += $${GstreamerDir}/lib/intl.lib
 INCLUDEPATH += $$PWD/dependencies/inc
 DEPENDPATH  += $$PWD/dependencies/inc
 LIBS += $$PWD/dependencies/lib/libardusub.dll.a
-#boost-1_73
-Boost_INCLUDE_DIR=C:/Boost/include/boost-1_73
-BOOST_LIBRARYDIR=C:/Boost/lib
-#ping-cpp
-INCLUDEPATH += $$PWD/dependencies/ping-cpp
-INCLUDEPATH += $$PWD/dependencies/ping-cpp/lib/fmt/include
-
-INCLUDEPATH += $$PWD/dependencies/ping-cpp/src/device
-INCLUDEPATH += $$PWD/dependencies/ping-cpp/src/generate
-INCLUDEPATH += $$PWD/dependencies/ping-cpp/src/hal
-INCLUDEPATH += $$PWD/dependencies/ping-cpp/src/message
-
-CONFIG(debug, debug|release) {
-LIBS += $$PWD/dependencies/lib/debug/libDEVICE.a
-LIBS += $$PWD/dependencies/lib/debug/libfmtd.a
-LIBS += $$PWD/dependencies/lib/debug/libHAL.a
-
-} else {
-LIBS += $$PWD/dependencies/lib/libDEVICE.a
-LIBS += $$PWD/dependencies/lib/libfmt.a
-LIBS += $$PWD/dependencies/lib/libHAL.a
-}
+include($$PWD/dependencies/ping-cpp.pri)
+include($$PWD/dependencies/link.pri)

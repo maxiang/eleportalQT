@@ -10,7 +10,7 @@
 #include <QQuickWidget>
 
 #include "VideoReceiver.h"
-
+#include "pingsensor.h"
 namespace AS
 {
 #include "ardusub_api.h"
@@ -30,6 +30,7 @@ public:
     void resizeWindowsManual();
     void ResizeToolBar();
     void AddToolBarSpacer(QToolBar* pToolBar=nullptr,int width=-1);
+    void InitPing1dUDP();
 private slots:
     void updateVehicleData();
     void manualControl();
@@ -46,11 +47,12 @@ private slots:
 
     void on_actionSonarGps_triggered();
 
+    void on_updateConfidence();
 private:
     Ui::MainWindow *ui;
 
     VideoReceiver *videoReceiver;
-
+    PingSensor*   pingLink;
     QPushButton *armCheckBox;
     QPushButton *modeComboBox;               //Changing Combobox to Button
     //QComboBox *modeComboBox;
@@ -60,7 +62,7 @@ private:
     QLabel *pitchLabelValue;
     QLabel *rollLabelValue;
     QLabel *depthLabelValue;
-
+    QLabel *SonarlValue;
     // timer
     QTimer vehicleDataUpdateTimer;
     QTimer manualControlTimer;

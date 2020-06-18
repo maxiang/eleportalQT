@@ -1,7 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include <ping-message-all.h>
-#include <ping-parser.h>
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -79,6 +78,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     //Load MAPS
     ui->quickWidget_2->setSource(QUrl(QStringLiteral("qrc:/assets/maps.qml")));
+    pingLink=new PingSensor(this);
+    connect(pingLink,SIGNAL(distanceConfidenceChanged()),this,SLOT(on_updateConfidence()));
 }
 
 
@@ -123,7 +124,7 @@ void MainWindow::setupToolBars()
     ui->tabsToolBar->addWidget(modeComboBox);
 
     QLabel *SonarLabel=new QLabel("Sonar: ");
-    QLabel *SonarlValue = new QLabel("21.0m(95%)   ");
+    SonarlValue = new QLabel("21.0m(95%)   ");
     SonarlValue->setFocusPolicy(Qt::NoFocus);
 
     QLabel *yawLabel = new QLabel("Compass: ", this);
@@ -179,6 +180,8 @@ void MainWindow::setupToolBars()
     ui->statusToolBar->addWidget(bannerLabel);
 
     ui->menuPage->setStyleSheet("border-image: url(:/assets/keyboardControls.png);");  //DISPLAY KEYBOARD CONTROLS HELP IMAGE
+
+
     ResizeToolBar();
 }
 
@@ -767,5 +770,12 @@ void MainWindow::armCheckBox_stateChanged(bool checked)
 
 void MainWindow::on_actionSonarGps_triggered()
 {
-     ui->mainStackedWidget->setCurrentIndex(2);
+    ui->mainStackedWidget->setCurrentIndex(2);
+}
+
+void MainWindow::on_updateConfidence()
+{
+    //SonarlValue
+    QString strValue=QString("%1m(%2\%)   ").arg(pingLink->getDistance()/1000.0).arg(pingLink->getConfidence());
+    SonarlValue->setText(strValue);
 }
