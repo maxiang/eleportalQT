@@ -526,7 +526,8 @@ void QCompass::paintEvent(QPaintEvent *)
 
         painter.drawRoundedRect(fx, fy, w, h, 0, 4);
 
-        sprintf(buf, "D: %5.2f m", m_alt);
+        //sprintf(buf, "D: %5.2f m", m_alt);
+        sprintf(buf, "%5.2f deg", m_alt);
         s = buf;
         painter.drawText(QRectF(fx, fy+h/4, w, h/2), Qt::AlignCenter, s);
     }

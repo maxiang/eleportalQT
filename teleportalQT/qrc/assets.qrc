@@ -11,5 +11,6 @@
         <file>../assets/maps.qml</file>
         <file>../assets/icons/help.png</file>
         <file>../assets/icons/map.png</file>
+        <file>../assets/icons/rovicon2.png</file>
     </qresource>
 </RCC>

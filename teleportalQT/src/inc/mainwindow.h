@@ -48,6 +48,8 @@ private slots:
     void on_actionSonarGps_triggered();
 
     void on_updateConfidence();
+
+    void  on_statusChanged(QQuickWidget::Status status);
 private:
     Ui::MainWindow *ui;
 

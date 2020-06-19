@@ -77,9 +77,11 @@ MainWindow::MainWindow(QWidget *parent)
     videoReceiver->start(ui->quickWidget);
 
     //Load MAPS
+    connect(ui->quickWidget_2,SIGNAL(statusChanged(QQuickWidget::Status)),this,SLOT(on_statusChanged(QQuickWidget::Status)));
     ui->quickWidget_2->setSource(QUrl(QStringLiteral("qrc:/assets/maps.qml")));
     pingLink=new PingSensor(this);
     connect(pingLink,SIGNAL(distanceConfidenceChanged()),this,SLOT(on_updateConfidence()));
+
 }
 
 
@@ -111,7 +113,7 @@ void MainWindow::setupToolBars()
     AddToolBarSpacer(ui->vehicleToolBar);
     connect(armCheckBox,SIGNAL(clicked(bool)),
                      this,SLOT(armCheckBox_stateChanged(bool)));
-    ui->vehicleToolBar->addSeparator();
+  //  ui->vehicleToolBar->addSeparator();
     AddToolBarSpacer(ui->tabsToolBar,100);
     QLabel *modeLable = new QLabel(this);
     modeLable->setText("Mode: ");
@@ -149,6 +151,8 @@ void MainWindow::setupToolBars()
     pitchLabelValue->setVisible(false);
     rollLabel->setVisible(false);
     rollLabelValue->setVisible(false);
+    yawLabel->setVisible(false);
+    yawLabelValue->setVisible(false);
 
     QLabel *depthLabel = new QLabel("Depth: ", this);
     depthLabel->setFocusPolicy(Qt::NoFocus);
@@ -181,7 +185,9 @@ void MainWindow::setupToolBars()
 
     ui->menuPage->setStyleSheet("border-image: url(:/assets/keyboardControls.png);");  //DISPLAY KEYBOARD CONTROLS HELP IMAGE
 
-
+    ui->tabsToolBar->setStyleSheet("QToolBar { border-left-style: none; border-right-style: none; }");
+    ui->vehicleToolBar->setStyleSheet("QToolBar { border-left-style: none; border-right-style: none; }");
+    ui->statusToolBar->setStyleSheet("QToolBar { border-left-style: none; border-right-style: none; }");
     ResizeToolBar();
 }
 
@@ -250,9 +256,21 @@ void MainWindow::updateVehicleData()
 
     rollLabelValue->setNum(round(roll * 100) / 100.0);
     pitchLabelValue->setNum(round(pitch * 100) / 100.0);
-    yawLabelValue->setNum(round(yaw * 100) / 100.0);
+    double yawLableCompass=round(yaw * 100) / 100.0;
+    yawLabelValue->setNum(yawLableCompass);
     depthLabelValue->setNum(round(depth * 100) / 100.0);
 
+    ui->qCompass->setAlt(yawLableCompass);//2020/06/19
+    ui->qCompass->setYaw(yawLableCompass);
+    if(ui->quickWidget_2->status()==QQuickWidget::Ready)
+    {
+        QQuickItem* pImgItem=ui->quickWidget_2->rootObject()->findChild<QQuickItem*>("markerimg");
+        if(pImgItem)
+        {
+            pImgItem->setRotation(yawLableCompass);
+
+        }
+    }
     //IF USER IS IDLE FOR 180 SEC DISARM ROBOT
 
         LASTINPUTINFO LastInput = {}; 
@@ -779,3 +797,16 @@ void MainWindow::on_updateConfidence()
     QString strValue=QString("%1m(%2\%)   ").arg(pingLink->getDistance()/1000.0).arg(pingLink->getConfidence());
     SonarlValue->setText(strValue);
 }
+
+void MainWindow::on_statusChanged(QQuickWidget::Status status)
+{
+    if(status==QQuickWidget::Ready)
+    {
+        QQuickItem* pImgItem=ui->quickWidget_2->rootObject()->findChild<QQuickItem*>("markerimg");
+        if(pImgItem)
+        {
+
+        }
+    }
+}
+
