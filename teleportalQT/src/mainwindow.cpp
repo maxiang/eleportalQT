@@ -705,6 +705,8 @@ void MainWindow::on_actionVideo_triggered()
     ui->actionVideo->setDisabled(true);
     ui->actionMenu->setChecked(false);
     ui->actionMenu->setDisabled(false);
+    ui->actionSonarGps->setChecked(false);
+    ui->actionSonarGps->setDisabled(false);
 }
 
 
@@ -715,6 +717,8 @@ void MainWindow::on_actionMenu_triggered()
     ui->actionMenu->setDisabled(true);
     ui->actionVideo->setChecked(false);
     ui->actionVideo->setDisabled(false);
+    ui->actionSonarGps->setChecked(false);
+    ui->actionSonarGps->setDisabled(false);
 }
 
 
@@ -789,6 +793,13 @@ void MainWindow::armCheckBox_stateChanged(bool checked)
 void MainWindow::on_actionSonarGps_triggered()
 {
     ui->mainStackedWidget->setCurrentIndex(2);
+    ui->actionSonarGps->setChecked(true);
+    ui->actionSonarGps->setDisabled(true);
+    ui->actionMenu->setChecked(false);
+    ui->actionMenu->setDisabled(false);
+    ui->actionVideo->setChecked(false);
+    ui->actionVideo->setDisabled(false);
+
 }
 
 void MainWindow::on_updateConfidence()
