@@ -31,6 +31,8 @@ public:
     void ResizeToolBar();
     void AddToolBarSpacer(QToolBar* pToolBar=nullptr,int width=-1);
     void InitPing1dUDP();
+    void CheckRollOrPitchChang(bool bTimerOut=false);
+    void RestartNetWork();
 private slots:
     void updateVehicleData();
     void manualControl();
@@ -84,6 +86,10 @@ private:
     int   ConfidenceSetting = 90;
     QTime  PrevTime;
     QObject*    qmlTimer=nullptr;
+    //check roll pitch
+    QTimer       rollLPitchCheckTimer;
+    QString     strRollValue;
+    QString     strPitchValue;
     typedef struct
     {
         int16_t x;

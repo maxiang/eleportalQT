@@ -82,6 +82,11 @@ MainWindow::MainWindow(QWidget *parent)
     pingLink=new PingSensor(this);
     PrevTime=QTime::currentTime();
     connect(pingLink,SIGNAL(distanceConfidenceChanged()),this,SLOT(on_updateConfidence()));
+    rollLPitchCheckTimer.setInterval(10000);
+    connect(&rollLPitchCheckTimer, &QTimer::timeout, this, [this] {
+        CheckRollOrPitchChang(true);
+    });
+    rollLPitchCheckTimer.start();
 
 }
 
@@ -189,6 +194,8 @@ void MainWindow::setupToolBars()
     ui->tabsToolBar->setStyleSheet("QToolBar { border-left-style: none; border-right-style: none; }");
     ui->vehicleToolBar->setStyleSheet("QToolBar { border-left-style: none; border-right-style: none; }");
     ui->statusToolBar->setStyleSheet("QToolBar { border-left-style: none; border-right-style: none; }");
+    strRollValue=rollLabelValue->text();
+    strPitchValue=pitchLabelValue->text();
     ResizeToolBar();
 }
 
@@ -284,6 +291,8 @@ void MainWindow::updateVehicleData()
             armCheckBox_stateChanged(Qt::Unchecked);
             
         }
+    CheckRollOrPitchChang(false);
+
 }
 
 
@@ -338,7 +347,6 @@ void MainWindow::AddToolBarSpacer(QToolBar *pToolBar,int width)
     pToolBar->setFocusPolicy(Qt::NoFocus);
     pToolBar->addWidget(spacer);
 }
-
 
 void MainWindow::resizeEvent(QResizeEvent *event)
 {
@@ -883,4 +891,39 @@ void MainWindow::on_mainStackedWidget_currentChanged(int arg1)
         }
 
     }
+}
+void MainWindow::CheckRollOrPitchChang(bool bTimerOut)
+{
+
+    QString strRoll=rollLabelValue->text();
+    QString strPitch=pitchLabelValue->text();
+
+    if(strRollValue!=strRoll||strPitchValue!=strPitch)
+    {
+        strRollValue=strRoll;
+        strPitchValue=strPitch;
+
+        //timer restart
+        rollLPitchCheckTimer.start();
+    }
+    else
+    {
+        if(bTimerOut)
+        {
+            //restart ping
+            RestartNetWork();
+        }
+    }
+}
+
+void MainWindow::RestartNetWork()
+{
+    rollLPitchCheckTimer.stop();
+    std::string ip("192.168.2.");
+    AS::as_api_init(ip.c_str(), F_THREAD_NAMED_VAL_FLOAT|F_STORAGE_NONE);
+    armCheckBox->setChecked(false);
+    armCheckBox_stateChanged(Qt::Unchecked);
+    //rest connect
+    pingLink->connectLink();
+    rollLPitchCheckTimer.start();
 }
