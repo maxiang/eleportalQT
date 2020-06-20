@@ -50,6 +50,8 @@ private slots:
     void on_updateConfidence();
 
     void  on_statusChanged(QQuickWidget::Status status);
+    void on_mainStackedWidget_currentChanged(int arg1);
+
 private:
     Ui::MainWindow *ui;
 
@@ -65,6 +67,7 @@ private:
     QLabel *rollLabelValue;
     QLabel *depthLabelValue;
     QLabel *SonarlValue;
+    QLabel *SonarLabel;
     // timer
     QTimer vehicleDataUpdateTimer;
     QTimer manualControlTimer;
@@ -72,7 +75,15 @@ private:
     int m_modeIndex; 
     uint IdleTime;                        //Changin Combobox to Button
 	bool	firstRun;                     // first run flag 2020/02/20
-
+    //
+    float WarnDistance = 1.0;
+    float MinDistance = 0.5;
+    bool  SonarAlarm = false;
+    int   AlarmTime = 0;                 //Unused
+    int   AlarmSetting = 5;
+    int   ConfidenceSetting = 90;
+    QTime  PrevTime;
+    QObject*    qmlTimer=nullptr;
     typedef struct
     {
         int16_t x;

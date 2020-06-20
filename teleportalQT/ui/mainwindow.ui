@@ -10,6 +10,11 @@
     <height>700</height>
    </rect>
   </property>
+  <property name="font">
+   <font>
+    <family>ADMUI3Lg</family>
+   </font>
+  </property>
   <property name="windowTitle">
    <string>Teleportal</string>
   </property>

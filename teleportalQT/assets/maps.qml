@@ -28,6 +28,7 @@ Item {
                   interval: 1000;
                   running: false;
                   repeat: true
+                  objectName:"qmlTimer"
                   onTriggered:
                   {
                       if(!mapview.scalestate)
@@ -62,20 +63,21 @@ Item {
             anchors.fill: parent
             acceptedButtons: Qt.LeftButton| Qt.RightButton;
             onClicked:{
-                if(scaleTimer.running)
-                {
+               // if(scaleTimer.running)
+               // {
                     scaleTimer.stop();
-                }
-                else
-                {
-                    scaleTimer.start();
-                }
+               // }
+               // else
+               // {
+                 //   scaleTimer.start();
+               // }
             }
         }
+
         Component.onCompleted:
         {
            scaleTimer.start();
-        }
+        }      
         MapQuickItem
         {
                     zoomLevel: 0
