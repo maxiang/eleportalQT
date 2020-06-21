@@ -268,7 +268,7 @@ void MainWindow::updateVehicleData()
     yawLabelValue->setNum(yawLableCompass);
     depthLabelValue->setNum(round(depth * 100) / 100.0);
 
-    ui->qCompass->setAlt(yawLableCompass);//2020/06/19
+//    ui->qCompass->setAlt(yawLableCompass);//2020/06/19
     ui->qCompass->setYaw(yawLableCompass);
     if(ui->quickWidget_2->status()==QQuickWidget::Ready)
     {

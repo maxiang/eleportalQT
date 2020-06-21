@@ -462,7 +462,7 @@ void QCompass::paintEvent(QPaintEvent *)
         int     yawMarkerSize = m_size/12;
         double  fx1, fy1, fx2, fy2, fx3, fy3;
 
-        painter.rotate(-m_yaw);
+        painter.rotate(m_yaw);
         painter.setBrush(QBrush(QColor(0xFF, 0x00, 0x00, 0xE0)));
 
         fx1 = 0;
@@ -479,7 +479,7 @@ void QCompass::paintEvent(QPaintEvent *)
         };
         painter.drawPolygon(points, 3);
 
-        painter.rotate(m_yaw);
+        painter.rotate(-m_yaw);
     }
 
     // draw altitude
@@ -530,7 +530,8 @@ void QCompass::paintEvent(QPaintEvent *)
         painter.drawRoundedRect(fx, fy, w, h, 0, 4);
 
         //sprintf(buf, "D: %5.2f m", m_alt);
-        sprintf(buf, "%5.2f deg", m_alt);
+        //diraw yawLableCompass 20200621
+        sprintf(buf, "%d DEG", (int)m_yaw);
         s = buf;
         painter.drawText(QRectF(fx, fy+h/4, w, h/2), Qt::AlignCenter, s);
     }
