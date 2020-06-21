@@ -69,7 +69,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     std::string ip("192.168.2.");
     AS::as_api_init(ip.c_str(), F_THREAD_NAMED_VAL_FLOAT | F_STORAGE_NONE);
-
+    bas_init_status=true;
 
     //START MAIN LOOP
 
@@ -919,6 +919,7 @@ void MainWindow::CheckRollOrPitchChang(bool bTimerOut)
 void MainWindow::RestartNetWork()
 {
     rollLPitchCheckTimer.stop();
+   // AS::as_api_deinit();
     std::string ip("192.168.2.");
     AS::as_api_init(ip.c_str(), F_THREAD_NAMED_VAL_FLOAT|F_STORAGE_NONE);
     armCheckBox->setChecked(false);

@@ -217,8 +217,11 @@ void QADI::paintEvent(QPaintEvent *)
                 painter.drawLine(QPointF(fx1, fy1), QPointF(fx2, fy2));
 
                 fy2 = fy1 + rollLineLeng+2;
+                //not draw number
+                /*
                 painter.drawText(QRectF(-50, fy2, 100, fontSize+2),
                                  Qt::AlignCenter, s);
+                */
             } else {
                 fy2 = fy1 + rollLineLeng/2;
                 painter.drawLine(QPointF(fx1, fy1), QPointF(fx2, fy2));
@@ -365,15 +368,14 @@ void QCompass::paintEvent(QPaintEvent *)
         blackPen.setWidth(1);
         painter.setPen(blackPen);
 
-        for(int i=0; i<yawLines; i++) {
-
+        for(int i=0; i<yawLines; i++) {          
             if( i == 0 ) {
                 s = "N";
                 painter.setPen(bluePen);
 
                 painter.setFont(QFont("Arial", static_cast<int>(fontSize*1.2)));
             } else if ( i == 9 ) {
-                s = "W";
+                s = "E";
                 painter.setPen(blackPen);
 
                 painter.setFont(QFont("Arial", static_cast<int>(fontSize*1.2)));
@@ -383,7 +385,7 @@ void QCompass::paintEvent(QPaintEvent *)
 
                 painter.setFont(QFont("Arial", static_cast<int>(fontSize*1.2)));
             } else if ( i == 27 ) {
-                s = "E";
+                s = "W";
                 painter.setPen(blackPen);
 
                 painter.setFont(QFont("Arial", static_cast<int>(fontSize*1.2)));
@@ -392,6 +394,7 @@ void QCompass::paintEvent(QPaintEvent *)
                 painter.setPen(blackPen);
 
                 painter.setFont(QFont("Arial", fontSize));
+
             }
 
             fx1 = 0;
@@ -410,7 +413,7 @@ void QCompass::paintEvent(QPaintEvent *)
                 painter.drawLine(QPointF(fx1, fy1), QPointF(fx2, fy2));
             }
 
-            painter.rotate(-rotAng);
+            painter.rotate(rotAng);
         }
     }
 

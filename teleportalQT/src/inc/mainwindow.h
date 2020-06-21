@@ -90,6 +90,7 @@ private:
     QTimer       rollLPitchCheckTimer;
     QString     strRollValue;
     QString     strPitchValue;
+    bool        bas_init_status=false;
     typedef struct
     {
         int16_t x;
