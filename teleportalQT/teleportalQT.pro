@@ -1,4 +1,4 @@
-QT       += core gui quickwidgets qml network
+QT       += core gui quickwidgets qml network positioning
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 

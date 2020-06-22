@@ -33,6 +33,9 @@ public:
     void InitPing1dUDP();
     void CheckRollOrPitchChang(bool bTimerOut=false);
     void RestartNetWork();
+    void LoadInIConfig();
+    void UpdateMapCenterCoordinates(QStringList coord);
+    void UpdateMarkerCoordinates(QStringList coord);
 private slots:
     void updateVehicleData();
     void manualControl();
@@ -91,6 +94,10 @@ private:
     QString     strRollValue;
     QString     strPitchValue;
     bool        bas_init_status=false;
+    QStringList     fMapCoordinates;
+    QStringList     fMarkerCoordinates;
+    bool        bardusubCoordinates;// is use  ardusubapi coordinates
+    uint         iIdleSetting;
     typedef struct
     {
         int16_t x;

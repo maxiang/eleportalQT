@@ -13,6 +13,7 @@ Item {
 
     Map {
         id:mapview
+        objectName:"qmlMapView"
         anchors.fill: parent
         plugin: mapPlugin
         center: QtPositioning.coordinate(-31.16581,148.08496)
@@ -23,6 +24,7 @@ Item {
         property int  interval:1
         property bool scalestate: false
         activeMapType:supportedMapTypes[1]
+
         Timer {
                   id: scaleTimer
                   interval: 1000;
@@ -85,6 +87,7 @@ Item {
                     coordinate: QtPositioning.coordinate(-31.16581,148.08496)
                     anchorPoint.x: image1.width/2
                     anchorPoint.y: image1.height/2
+                    objectName:"markerItem"
                     sourceItem: Grid{
                     Image
                     {

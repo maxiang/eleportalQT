@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QMetaObject>
-
+#include <QGeoCoordinate>
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -64,7 +64,7 @@ MainWindow::MainWindow(QWidget *parent)
     setFocusPolicy(Qt::StrongFocus);
     setFocus();                     
 
-
+    LoadInIConfig();
     //INITILIZE & CONNECT TO ROBOT
 
     std::string ip("192.168.2.");
@@ -285,7 +285,7 @@ void MainWindow::updateVehicleData()
         LastInput.cbSize = sizeof(LastInput); 
         ::GetLastInputInfo(&LastInput); 
         uint IdleTime = (::GetTickCount() - LastInput.dwTime)/1000;
-        if ((IdleTime > 180) == true)
+        if ((IdleTime > iIdleSetting) == true)
         {
             armCheckBox->setChecked(false);
             armCheckBox_stateChanged(Qt::Unchecked);
@@ -872,7 +872,9 @@ void MainWindow::on_statusChanged(QQuickWidget::Status status)
     if(status==QQuickWidget::Ready)
     {
         qmlTimer=ui->quickWidget_2->rootObject()->findChild<QObject*>("qmlTimer");
-
+        //use ini file Coordinates
+        UpdateMapCenterCoordinates(fMapCoordinates);
+        UpdateMarkerCoordinates(fMarkerCoordinates);
 
     }
 }
@@ -883,7 +885,8 @@ void MainWindow::on_mainStackedWidget_currentChanged(int arg1)
     {
         if(arg1==2)
         {
-            QMetaObject::invokeMethod(qmlTimer,"start",Qt::QueuedConnection);
+           QMetaObject::invokeMethod(qmlTimer,"start",Qt::QueuedConnection);
+
         }
         else
         {
@@ -927,4 +930,78 @@ void MainWindow::RestartNetWork()
     //rest connect
     pingLink->connectLink();
     rollLPitchCheckTimer.start();
+}
+
+void MainWindow::LoadInIConfig()
+{
+    QSettings sets("Teleportal.ini",QSettings::IniFormat);
+    if(!sets.allKeys().size())
+    {
+        //def value
+
+        sets.setValue("GPS/MapCoordinates",QStringList{"-14.0094983494893","80.1233232234234"});
+        sets.setValue("GPS/MarkerCoordinates",QStringList{"-14.0094983494893","80.1233232234234"});
+        sets.setValue("GPS/ardusubCoordinates",false);
+
+        sets.setValue("KEYBOARD/forward",700);
+        sets.setValue("KEYBOARD/backward",-700);
+        sets.setValue("KEYBOARD/leftward",-700);
+        sets.setValue("KEYBOARD/rightward",700);
+        sets.setValue("KEYBOARD/upward",900);
+        sets.setValue("KEYBOARD/downward",100);
+        sets.setValue("KEYBOARD/turnLeft",-700);
+        sets.setValue("KEYBOARD/turnRight",700);
+        sets.setValue("KEYBOARD/turnLeftM",-300);
+        sets.setValue("KEYBOARD/turnRightM",300);
+
+        sets.setValue("SONAR/WarnDistance",1);
+        sets.setValue("SONAR/MinDistance",0.5);
+        sets.setValue("SONAR/AlarmSetting",5);
+        sets.setValue("SONAR/ConfidenceSetting",90);
+
+        sets.setValue("MISC/IdleSetting",180);
+    }
+
+    fMapCoordinates=sets.value("GPS/MapCoordinates").toStringList();
+    fMarkerCoordinates=sets.value("GPS/MarkerCoordinates").toStringList();
+    bardusubCoordinates=sets.value("GPS/ardusubCoordinates").toBool();
+
+    //keyControlValue
+    keyControlValue.forward=sets.value("KEYBOARD/forward").toInt();
+    keyControlValue.backward=sets.value("KEYBOARD/backward").toInt();
+    keyControlValue.leftward=sets.value("KEYBOARD/leftward").toInt();
+    keyControlValue.rightward=sets.value("KEYBOARD/rightward").toInt();
+    keyControlValue.upward=sets.value("KEYBOARD/upward").toInt();
+    keyControlValue.downward=sets.value("KEYBOARD/downward").toInt();
+    keyControlValue.turnLeft=sets.value("KEYBOARD/turnLeft").toInt();
+    keyControlValue.turnRight=sets.value("KEYBOARD/turnRight").toInt();
+    keyControlValue.turnLeftM=sets.value("KEYBOARD/turnLeftM").toInt();
+    keyControlValue.turnRightM=sets.value("KEYBOARD/turnRightM").toInt();
+
+    WarnDistance=sets.value("SONAR/WarnDistance").toFloat();
+    MinDistance=sets.value("SONAR/MinDistance").toFloat();
+    AlarmSetting=sets.value("SONAR/AlarmSetting").toInt();
+    ConfidenceSetting=sets.value("SONAR/ConfidenceSetting").toInt();
+
+    iIdleSetting=sets.value("MISC/IdleSetting").toUInt();
+
+}
+
+void MainWindow::UpdateMapCenterCoordinates(QStringList coord)
+{
+    QObject* mapView=ui->quickWidget_2->rootObject()->findChild<QObject*>("qmlMapView");
+    QGeoCoordinate qmlCoord=mapView->property("center").value<QGeoCoordinate>();
+    qmlCoord.setLatitude(coord.at(0).toDouble());
+    qmlCoord.setLongitude(coord.at(1).toDouble());
+    mapView->setProperty("center",QVariant::fromValue(qmlCoord));
+
+}
+
+void MainWindow::UpdateMarkerCoordinates(QStringList coord)
+{
+    QObject* markerItem=ui->quickWidget_2->rootObject()->findChild<QObject*>("markerItem");
+    QGeoCoordinate qmlCoord=markerItem->property("coordinate").value<QGeoCoordinate>();
+    qmlCoord.setLatitude(coord.at(0).toDouble());
+    qmlCoord.setLongitude(coord.at(1).toDouble());
+    markerItem->setProperty("coordinate",QVariant::fromValue(qmlCoord));
 }
