@@ -165,11 +165,16 @@ void MainWindow::setupToolBars()
     depthLabelValue = new QLabel("0.00", this);
     depthLabelValue->setFocusPolicy(Qt::NoFocus);
 
+    QLabel *metersLabel = new QLabel("Meters: ", this);
+    metersLabel->setFocusPolicy(Qt::NoFocus);
+    MetersValue = new QLabel("0", this);
+    MetersValue->setFocusPolicy(Qt::NoFocus);
+
     yawLabelValue->setFixedWidth(50);
     pitchLabelValue->setFixedWidth(50);
     rollLabelValue->setFixedWidth(50);
     depthLabelValue->setFixedWidth(50);	
-   
+    MetersValue->setFixedWidth(50);
 
     AddToolBarSpacer(ui->statusToolBar);
     ui->statusToolBar->addWidget(SonarLabel);
@@ -182,6 +187,8 @@ void MainWindow::setupToolBars()
     ui->statusToolBar->addWidget(rollLabelValue);
     ui->statusToolBar->addWidget(depthLabel);
     ui->statusToolBar->addWidget(depthLabelValue);
+    ui->statusToolBar->addWidget(metersLabel);
+    ui->statusToolBar->addWidget(MetersValue);
 
     QLabel *bannerLabel = new QLabel(this);
     bannerLabel->setFixedWidth(145);
@@ -292,6 +299,7 @@ void MainWindow::updateVehicleData()
             
         }
     CheckRollOrPitchChang(false);
+    UpdateModeLable();
 
 }
 
@@ -1004,4 +1012,29 @@ void MainWindow::UpdateMarkerCoordinates(QStringList coord)
     qmlCoord.setLatitude(coord.at(0).toDouble());
     qmlCoord.setLongitude(coord.at(1).toDouble());
     markerItem->setProperty("coordinate",QVariant::fromValue(qmlCoord));
+}
+
+void MainWindow::UpdateModeLable()
+{
+    //modeComboBox Manual, Stability, Depth hold
+    QString strMode="unknown";
+    if(vehicle_data)
+    {
+        if(vehicle_data->system_status==AS::SYS_ARMED)
+        {
+            if(vehicle_data->custom_mode==AS::ALT_HOLD)
+            {
+                strMode="Depth hold";
+            }
+            else if(vehicle_data->custom_mode==AS::MANUAL)
+            {
+                strMode="Manual";
+            }
+            else
+            {
+                strMode="Stability";
+            }
+        }
+    }
+    modeComboBox->setText(strMode);
 }

@@ -36,6 +36,7 @@ public:
     void LoadInIConfig();
     void UpdateMapCenterCoordinates(QStringList coord);
     void UpdateMarkerCoordinates(QStringList coord);
+    void UpdateModeLable();
 private slots:
     void updateVehicleData();
     void manualControl();
@@ -73,6 +74,7 @@ private:
     QLabel *depthLabelValue;
     QLabel *SonarlValue;
     QLabel *SonarLabel;
+    QLabel *MetersValue;
     // timer
     QTimer vehicleDataUpdateTimer;
     QTimer manualControlTimer;
