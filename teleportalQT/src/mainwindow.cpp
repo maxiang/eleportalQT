@@ -250,6 +250,7 @@ void MainWindow::updateVehicleData()
             armCheckBox_stateChanged(true);
             modeComboBox_currentIndexChanged(m_modeIndex);
 		    firstRun = true;
+            modeComboBox->setText("Manual");
 	}
 
     AS::as_api_get_vehicle_data2(currentVehicle, vehicle_data);
@@ -1040,6 +1041,8 @@ void MainWindow::UpdateMarkerCoordinates(QStringList coord)
 void MainWindow::UpdateModeLable()
 {
     //modeComboBox Manual, Stability, Depth hold
+    //F_THREAD_FETCH_FULL_PARAM
+    return;
     QString strMode="unknown";
     if(vehicle_data)
     {
@@ -1088,6 +1091,7 @@ void MainWindow::HandleNewKey(QKeyEvent *event)
             AS::as_api_check_vehicle(currentVehicle))
         {
             AS::as_api_set_mode(currentVehicle,AS::ALT_HOLD);
+            modeComboBox->setText("Depth hold");
         }
     }
     else if(event->key()==Qt::Key_B)
@@ -1097,6 +1101,7 @@ void MainWindow::HandleNewKey(QKeyEvent *event)
             AS::as_api_check_vehicle(currentVehicle))
         {
             AS::as_api_set_mode(currentVehicle,AS::STABILIZE);
+            modeComboBox->setText("Stability");
         }
     }
     else if(event->key()==Qt::Key_M)
@@ -1106,6 +1111,7 @@ void MainWindow::HandleNewKey(QKeyEvent *event)
             AS::as_api_check_vehicle(currentVehicle))
         {
             AS::as_api_set_mode(currentVehicle,AS::MANUAL);
+            modeComboBox->setText("Manual");
         }
     }
 }
