@@ -8,7 +8,8 @@
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QLabel>
 #include <QQuickWidget>
-
+#include <QGamepad>
+#include <QGamepadKeyNavigation>
 #include "VideoReceiver.h"
 #include "pingsensor.h"
 namespace AS
@@ -37,6 +38,9 @@ public:
     void UpdateMapCenterCoordinates(QStringList coord);
     void UpdateMarkerCoordinates(QStringList coord);
     void UpdateModeLable();
+    void HandleNewKey(QKeyEvent *event);
+    void InitGamePad();
+    void LoadMapingKey();
 private slots:
     void updateVehicleData();
     void manualControl();
@@ -58,6 +62,12 @@ private slots:
     void  on_statusChanged(QQuickWidget::Status status);
     void on_mainStackedWidget_currentChanged(int arg1);
 
+    void on_axisLeftXChanged(double value);
+    void on_axisLeftYChanged(double value);
+    void on_axisRightXChanged(double value);
+    void on_axisRightYChanged(double value);
+    void on_gamepadConnected(int deviceId);
+    void on_gamepadDisconnected(int deviceId);
 private:
     Ui::MainWindow *ui;
 
@@ -100,6 +110,8 @@ private:
     QStringList     fMarkerCoordinates;
     bool        bardusubCoordinates;// is use  ardusubapi coordinates
     uint         iIdleSetting;
+    QGamepad*   _gamepad;
+    QGamepadKeyNavigation*  _gameKeyNavigation;
     typedef struct
     {
         int16_t x;

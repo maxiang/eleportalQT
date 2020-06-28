@@ -2,12 +2,15 @@
 #include "ui_mainwindow.h"
 #include <QMetaObject>
 #include <QGeoCoordinate>
+#include <QGamepadManager>
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
     , videoReceiver(new VideoReceiver(this))
     , currentVehicle(1)
     , vehicle_data(new AS::Vehicle_Data_t)
+    ,_gamepad(nullptr)
+    ,_gameKeyNavigation(nullptr)
 {
     ui->setupUi(this);
 
@@ -65,6 +68,7 @@ MainWindow::MainWindow(QWidget *parent)
     setFocus();                     
 
     LoadInIConfig();
+    InitGamePad();
     //INITILIZE & CONNECT TO ROBOT
 
     std::string ip("192.168.2.");
@@ -162,19 +166,17 @@ void MainWindow::setupToolBars()
 
     QLabel *depthLabel = new QLabel("Depth: ", this);
     depthLabel->setFocusPolicy(Qt::NoFocus);
-    depthLabelValue = new QLabel("0.00", this);
+    depthLabelValue = new QLabel("0.00(Meters)", this);
     depthLabelValue->setFocusPolicy(Qt::NoFocus);
 
-    QLabel *metersLabel = new QLabel("Meters: ", this);
-    metersLabel->setFocusPolicy(Qt::NoFocus);
-    MetersValue = new QLabel("0", this);
-    MetersValue->setFocusPolicy(Qt::NoFocus);
+
+
 
     yawLabelValue->setFixedWidth(50);
     pitchLabelValue->setFixedWidth(50);
     rollLabelValue->setFixedWidth(50);
-    depthLabelValue->setFixedWidth(50);	
-    MetersValue->setFixedWidth(50);
+    depthLabelValue->setFixedWidth(100);
+
 
     AddToolBarSpacer(ui->statusToolBar);
     ui->statusToolBar->addWidget(SonarLabel);
@@ -187,8 +189,8 @@ void MainWindow::setupToolBars()
     ui->statusToolBar->addWidget(rollLabelValue);
     ui->statusToolBar->addWidget(depthLabel);
     ui->statusToolBar->addWidget(depthLabelValue);
-    ui->statusToolBar->addWidget(metersLabel);
-    ui->statusToolBar->addWidget(MetersValue);
+
+
 
     QLabel *bannerLabel = new QLabel(this);
     bannerLabel->setFixedWidth(145);
@@ -274,7 +276,7 @@ void MainWindow::updateVehicleData()
     double yawLableCompass=round(yaw * 100) / 100.0;
     yawLabelValue->setNum(yawLableCompass);
     depthLabelValue->setNum(round(depth * 100) / 100.0);
-
+    depthLabelValue->setText(depthLabelValue->text()+"(Meters)");
 //    ui->qCompass->setAlt(yawLableCompass);//2020/06/19
     ui->qCompass->setYaw(yawLableCompass);
     if(ui->quickWidget_2->status()==QQuickWidget::Ready)
@@ -564,7 +566,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     {
         qDebug() << "You Pressed NOT supported Key";
     }
-
+    HandleNewKey(event);
     qDebug() << "x: " << manual_control.x;
     qDebug() << "y: " << manual_control.y;
     qDebug() << "z: " << manual_control.z;
@@ -903,6 +905,8 @@ void MainWindow::on_mainStackedWidget_currentChanged(int arg1)
 
     }
 }
+
+
 void MainWindow::CheckRollOrPitchChang(bool bTimerOut)
 {
 
@@ -930,11 +934,16 @@ void MainWindow::CheckRollOrPitchChang(bool bTimerOut)
 void MainWindow::RestartNetWork()
 {
     rollLPitchCheckTimer.stop();
+    if(armCheckBox->isChecked())
+    {
+
+        armCheckBox->setChecked(false);
+        armCheckBox_stateChanged(Qt::Unchecked);
+    }
    // AS::as_api_deinit();
     std::string ip("192.168.2.");
     AS::as_api_init(ip.c_str(), F_THREAD_NAMED_VAL_FLOAT|F_STORAGE_NONE);
-    armCheckBox->setChecked(false);
-    armCheckBox_stateChanged(Qt::Unchecked);
+
     //rest connect
     pingLink->connectLink();
     rollLPitchCheckTimer.start();
@@ -967,6 +976,19 @@ void MainWindow::LoadInIConfig()
         sets.setValue("SONAR/AlarmSetting",5);
         sets.setValue("SONAR/ConfidenceSetting",90);
 
+        //gamepad
+
+        sets.setValue("GAMEPAD/buttonL1","Qt::Key_F");
+        sets.setValue("GAMEPAD/buttonR1","Qt::Key_R");
+        sets.setValue("GAMEPAD/buttonUp","Qt::Key_T");
+        sets.setValue("GAMEPAD/buttonDown","Qt::Key_G");
+        //new key
+        sets.setValue("GAMEPAD/buttonSelect","Qt::Key_Q");
+        sets.setValue("GAMEPAD/buttonStart","Qt::Key_E");
+        sets.setValue("GAMEPAD/buttonX","Qt::Key_H");
+        sets.setValue("GAMEPAD/buttonY","Qt::Key_B");
+        sets.setValue("GAMEPAD/buttonB","Qt::Key_M");
+
         sets.setValue("MISC/IdleSetting",180);
     }
 
@@ -992,6 +1014,7 @@ void MainWindow::LoadInIConfig()
     ConfidenceSetting=sets.value("SONAR/ConfidenceSetting").toInt();
 
     iIdleSetting=sets.value("MISC/IdleSetting").toUInt();
+
 
 }
 
@@ -1020,13 +1043,12 @@ void MainWindow::UpdateModeLable()
     QString strMode="unknown";
     if(vehicle_data)
     {
-        if(vehicle_data->system_status==AS::SYS_ARMED)
-        {
-            if(vehicle_data->custom_mode==AS::ALT_HOLD)
+
+            if(vehicle_data->custom_mode&AS::ALT_HOLD)
             {
                 strMode="Depth hold";
             }
-            else if(vehicle_data->custom_mode==AS::MANUAL)
+            else if(vehicle_data->custom_mode&AS::MANUAL)
             {
                 strMode="Manual";
             }
@@ -1034,7 +1056,248 @@ void MainWindow::UpdateModeLable()
             {
                 strMode="Stability";
             }
-        }
+
     }
     modeComboBox->setText(strMode);
+}
+
+void MainWindow::HandleNewKey(QKeyEvent *event)
+{
+    if(event->key()==Qt::Key_Q)
+    {
+        //Disarm
+        if(armCheckBox->isChecked())
+        {
+            armCheckBox->setChecked(false);
+            armCheckBox_stateChanged(false);
+        }
+    }
+    else if(event->key()==Qt::Key_E)
+    {
+        //arm
+        if(!armCheckBox->isChecked())
+        {
+            armCheckBox->setChecked(true);
+            armCheckBox_stateChanged(true);
+        }
+    }
+    else if(event->key()==Qt::Key_H)
+    {
+        //Depth Hold Mode
+        if (armCheckBox->isChecked()&&
+            AS::as_api_check_vehicle(currentVehicle))
+        {
+            AS::as_api_set_mode(currentVehicle,AS::ALT_HOLD);
+        }
+    }
+    else if(event->key()==Qt::Key_B)
+    {
+        //Stablilize
+        if (armCheckBox->isChecked()&&
+            AS::as_api_check_vehicle(currentVehicle))
+        {
+            AS::as_api_set_mode(currentVehicle,AS::STABILIZE);
+        }
+    }
+    else if(event->key()==Qt::Key_M)
+    {
+        //Manual
+        if (armCheckBox->isChecked()&&
+            AS::as_api_check_vehicle(currentVehicle))
+        {
+            AS::as_api_set_mode(currentVehicle,AS::MANUAL);
+        }
+    }
+}
+
+void MainWindow::InitGamePad()
+{
+    connect(QGamepadManager::instance(),SIGNAL(gamepadConnected(int)), this,SLOT(on_gamepadConnected(int)));
+    connect(QGamepadManager::instance(),SIGNAL(gamepadDisconnected(int)), this,SLOT(on_gamepadDisconnected(int)));
+}
+
+void MainWindow::LoadMapingKey()
+{
+    static QMap<QString,Qt::Key> keymap{
+        {"Qt::Key_F",Qt::Key_F},
+        {"Qt::Key_R",Qt::Key_R},
+        {"Qt::Key_T",Qt::Key_T},
+        {"Qt::Key_G",Qt::Key_G},
+        {"Qt::Key_Q",Qt::Key_Q},
+        {"Qt::Key_E",Qt::Key_E},
+        {"Qt::Key_H",Qt::Key_H},
+        {"Qt::Key_B",Qt::Key_B},
+        {"Qt::Key_M",Qt::Key_M}
+    };
+    if(_gameKeyNavigation)
+    {
+         QSettings sets("Teleportal.ini",QSettings::IniFormat);
+         _gameKeyNavigation->setButtonL1Key(keymap[sets.value("GAMEPAD/buttonL1","Qt::Key_F").toString()]);
+         _gameKeyNavigation->setButtonR1Key(keymap[sets.value("GAMEPAD/buttonR1","Qt::Key_R").toString()]);
+         _gameKeyNavigation->setUpKey(keymap[sets.value("GAMEPAD/buttonUp","Qt::Key_T").toString()]);
+         _gameKeyNavigation->setDownKey(keymap[sets.value("GAMEPAD/buttonDown","Qt::Key_G").toString()]);
+         //new key
+         _gameKeyNavigation->setButtonSelectKey(keymap[sets.value("GAMEPAD/buttonSelect","Qt::Key_Q").toString()]);
+         _gameKeyNavigation->setButtonStartKey(keymap[sets.value("GAMEPAD/buttonStart","Qt::Key_E").toString()]);
+         _gameKeyNavigation->setButtonXKey(keymap[sets.value("GAMEPAD/buttonX","Qt::Key_H").toString()]);
+         _gameKeyNavigation->setButtonYKey(keymap[sets.value("GAMEPAD/buttonY","Qt::Key_B").toString()]);
+         _gameKeyNavigation->setButtonBKey(keymap[sets.value("GAMEPAD/buttonB","Qt::Key_M").toString()]);
+
+         //unused gamepad buttons
+         _gameKeyNavigation->setLeftKey(Qt::Key_unknown);
+         _gameKeyNavigation->setRightKey(Qt::Key_unknown);
+         _gameKeyNavigation->setButtonAKey(Qt::Key_unknown);
+         _gameKeyNavigation->setButtonL2Key(Qt::Key_unknown);
+         _gameKeyNavigation->setButtonL3Key(Qt::Key_unknown);
+         _gameKeyNavigation->setButtonR2Key(Qt::Key_unknown);
+         _gameKeyNavigation->setButtonR3Key(Qt::Key_unknown);
+         _gameKeyNavigation->setButtonGuideKey(Qt::Key_unknown);
+    }
+}
+void MainWindow::on_axisLeftXChanged(double value)
+{
+    //value rang -1.0 1.0
+    QKeyEvent *event=nullptr;
+    if(value>0.8)
+    {
+        //right
+        event=new QKeyEvent(QEvent::KeyPress,Qt::Key_Right, Qt::NoModifier);
+    }
+    else if(value<-0.8)
+    {
+        //left
+        event=new QKeyEvent(QEvent::KeyPress,Qt::Key_Left, Qt::NoModifier);
+    }
+    else if(value>-0.1&&value < 0.1)
+    {
+        //mid
+        if(pressedKey.Left == true)
+            event=new QKeyEvent(QEvent::KeyRelease,Qt::Key_Left, Qt::NoModifier);
+        else if(pressedKey.Right == true)
+            event=new QKeyEvent(QEvent::KeyRelease,Qt::Key_Right, Qt::NoModifier);
+    }
+    if(event)
+    {
+        QGuiApplication::sendEvent(this, event);
+    }
+}
+
+void MainWindow::on_axisLeftYChanged(double value)
+{
+    QKeyEvent *event=nullptr;
+    if(value>0.8)
+    {
+        //forward
+         event=new QKeyEvent(QEvent::KeyPress,Qt::Key_Up, Qt::NoModifier);
+    }
+    else if(value<-0.8)
+    {
+        //Reverse
+        event=new QKeyEvent(QEvent::KeyPress,Qt::Key_Down, Qt::NoModifier);
+    }
+    else if(value>-0.1&&value < 0.1)
+    {
+        //mid
+        if(pressedKey.Up == true)
+            event=new QKeyEvent(QEvent::KeyRelease,Qt::Key_Up, Qt::NoModifier);
+        else if(pressedKey.Down == true)
+            event=new QKeyEvent(QEvent::KeyRelease,Qt::Key_Down, Qt::NoModifier);
+    }
+    if(event)
+    {
+        QGuiApplication::sendEvent(this, event);
+    }
+}
+
+void MainWindow::on_axisRightXChanged(double value)
+{
+    QKeyEvent *event=nullptr;
+    if(value>0.8)
+    {
+        //yaw right
+        event=new QKeyEvent(QEvent::KeyPress,Qt::Key_D, Qt::NoModifier);
+    }
+    else if(value<-0.8)
+    {
+        //yaw left
+        event=new QKeyEvent(QEvent::KeyPress,Qt::Key_A, Qt::NoModifier);
+    }
+    else if(value>-0.1&&value < 0.1)
+    {
+        //mid
+        if(pressedKey.D == true)
+            event=new QKeyEvent(QEvent::KeyRelease,Qt::Key_D, Qt::NoModifier);
+        else if(pressedKey.A == true)
+            event=new QKeyEvent(QEvent::KeyRelease,Qt::Key_A, Qt::NoModifier);
+    }
+    if(event)
+    {
+        QGuiApplication::sendEvent(this, event);
+    }
+}
+
+void MainWindow::on_axisRightYChanged(double value)
+{
+    QKeyEvent *event=nullptr;
+    if(value>0.8)
+    {
+        //ascend
+         event=new QKeyEvent(QEvent::KeyPress,Qt::Key_W, Qt::NoModifier);
+    }
+    else if(value<-0.8)
+    {
+        //descend
+         event=new QKeyEvent(QEvent::KeyPress,Qt::Key_S, Qt::NoModifier);
+    }
+    else if(value>-0.1&&value < 0.1)
+    {
+        //mid
+        if(pressedKey.W == true)
+            event=new QKeyEvent(QEvent::KeyRelease,Qt::Key_W, Qt::NoModifier);
+        else if(pressedKey.S == true)
+            event=new QKeyEvent(QEvent::KeyRelease,Qt::Key_S, Qt::NoModifier);
+    }
+    if(event)
+    {
+        QGuiApplication::sendEvent(this, event);
+    }
+}
+
+void MainWindow::on_gamepadConnected(int deviceId)
+{
+    if(!_gamepad)
+    {
+        _gamepad=new QGamepad(deviceId,this);
+        if(!_gameKeyNavigation)
+        {
+            _gameKeyNavigation=new QGamepadKeyNavigation(this);
+            _gameKeyNavigation->setGamepad(_gamepad);
+            LoadMapingKey();
+        }
+    }
+    connect(_gamepad,&QGamepad::axisLeftXChanged,this,&MainWindow::on_axisLeftXChanged);
+    connect(_gamepad,&QGamepad::axisLeftYChanged,this,&MainWindow::on_axisLeftYChanged);
+    connect(_gamepad,&QGamepad::axisRightXChanged,this,&MainWindow::on_axisRightXChanged);
+    connect(_gamepad,&QGamepad::axisRightYChanged,this,&MainWindow::on_axisRightYChanged);
+}
+
+void MainWindow::on_gamepadDisconnected(int deviceId)
+{
+    if(_gamepad)
+    {
+        if(_gamepad->deviceId()==deviceId)
+        {
+            disconnect(_gamepad,&QGamepad::axisLeftXChanged,this,&MainWindow::on_axisLeftXChanged);
+            disconnect(_gamepad,&QGamepad::axisLeftYChanged,this,&MainWindow::on_axisLeftYChanged);
+            disconnect(_gamepad,&QGamepad::axisRightXChanged,this,&MainWindow::on_axisRightXChanged);
+            disconnect(_gamepad,&QGamepad::axisRightYChanged,this,&MainWindow::on_axisRightYChanged);
+        }
+        if(_gameKeyNavigation)
+        {
+            _gameKeyNavigation->deleteLater();
+            _gameKeyNavigation=nullptr;
+        }
+        _gamepad->deleteLater();
+        _gamepad=nullptr;
+    }
 }
