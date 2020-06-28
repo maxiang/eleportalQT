@@ -129,7 +129,7 @@ void MainWindow::setupToolBars()
     modeLable->setText("Mode: ");
     ui->tabsToolBar->addWidget(modeLable);
     modeComboBox = new QPushButton(this);
-    modeComboBox->setText("Depth Hold");
+    modeComboBox->setText("Depth hold");
     modeComboBox->setFocusPolicy(Qt::NoFocus);
     modeComboBox->show();
     connect (modeComboBox , SIGNAL(clicked()) , this , SLOT(on_modeBt_clicked()) );
