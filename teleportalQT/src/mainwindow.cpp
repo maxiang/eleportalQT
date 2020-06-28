@@ -211,10 +211,30 @@ void MainWindow::setupToolBars()
 
 void MainWindow::on_modeBt_clicked(){
 
-	//CHANGES MODE BUTTON ON CLICK
+    //CHANGES MODE BUTTON ON CLICK、
+    /*
     m_modeIndex ++;
     m_modeIndex %= 3;
     modeComboBox_currentIndexChanged(m_modeIndex);
+    */
+    //add new 20200629
+    QKeyEvent* event=nullptr;
+    if(modeComboBox->text()=="Depth hold")
+    {
+        event=new QKeyEvent(QEvent::KeyPress,Qt::Key_B, Qt::NoModifier);
+    }
+    else if(modeComboBox->text()=="Stability")
+    {
+        event=new QKeyEvent(QEvent::KeyPress,Qt::Key_M, Qt::NoModifier);
+    }
+    else if(modeComboBox->text()=="Manual")
+    {
+        event=new QKeyEvent(QEvent::KeyPress,Qt::Key_H, Qt::NoModifier);
+    }
+    if(event)
+    {
+        QGuiApplication::sendEvent(this, event);
+    }
 }
 
 
@@ -248,9 +268,9 @@ void MainWindow::updateVehicleData()
          	armCheckBox->setChecked(false);
             m_modeIndex = 2;
             armCheckBox_stateChanged(true);
-            modeComboBox_currentIndexChanged(m_modeIndex);
+           // modeComboBox_currentIndexChanged(m_modeIndex);
 		    firstRun = true;
-            modeComboBox->setText("Manual");
+            QGuiApplication::sendEvent(this,new QKeyEvent(QEvent::KeyPress,Qt::Key_H, Qt::NoModifier));
 	}
 
     AS::as_api_get_vehicle_data2(currentVehicle, vehicle_data);
