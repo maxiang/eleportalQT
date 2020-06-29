@@ -1004,8 +1004,8 @@ void MainWindow::LoadInIConfig()
         sets.setValue("GAMEPAD/buttonUp","Qt::Key_T");
         sets.setValue("GAMEPAD/buttonDown","Qt::Key_G");
         //new key
-        sets.setValue("GAMEPAD/buttonSelect","Qt::Key_Q");
-        sets.setValue("GAMEPAD/buttonStart","Qt::Key_E");
+        sets.setValue("GAMEPAD/buttonSelect","Qt::Key_O");
+        sets.setValue("GAMEPAD/buttonStart","Qt::Key_L");
         sets.setValue("GAMEPAD/buttonX","Qt::Key_H");
         sets.setValue("GAMEPAD/buttonY","Qt::Key_B");
         sets.setValue("GAMEPAD/buttonB","Qt::Key_M");
@@ -1160,8 +1160,8 @@ void MainWindow::LoadMapingKey()
         {"Qt::Key_R",Qt::Key_R},
         {"Qt::Key_T",Qt::Key_T},
         {"Qt::Key_G",Qt::Key_G},
-        {"Qt::Key_Q",Qt::Key_Q},
-        {"Qt::Key_E",Qt::Key_E},
+        {"Qt::Key_O",Qt::Key_O},
+        {"Qt::Key_L",Qt::Key_L},
         {"Qt::Key_H",Qt::Key_H},
         {"Qt::Key_B",Qt::Key_B},
         {"Qt::Key_M",Qt::Key_M}
@@ -1174,8 +1174,8 @@ void MainWindow::LoadMapingKey()
          _gameKeyNavigation->setUpKey(keymap[sets.value("GAMEPAD/buttonUp","Qt::Key_T").toString()]);
          _gameKeyNavigation->setDownKey(keymap[sets.value("GAMEPAD/buttonDown","Qt::Key_G").toString()]);
          //new key
-         _gameKeyNavigation->setButtonSelectKey(keymap[sets.value("GAMEPAD/buttonSelect","Qt::Key_Q").toString()]);
-         _gameKeyNavigation->setButtonStartKey(keymap[sets.value("GAMEPAD/buttonStart","Qt::Key_E").toString()]);
+         _gameKeyNavigation->setButtonSelectKey(keymap[sets.value("GAMEPAD/buttonSelect","Qt::Key_O").toString()]);
+         _gameKeyNavigation->setButtonStartKey(keymap[sets.value("GAMEPAD/buttonStart","Qt::Key_L").toString()]);
          _gameKeyNavigation->setButtonXKey(keymap[sets.value("GAMEPAD/buttonX","Qt::Key_H").toString()]);
          _gameKeyNavigation->setButtonYKey(keymap[sets.value("GAMEPAD/buttonY","Qt::Key_B").toString()]);
          _gameKeyNavigation->setButtonBKey(keymap[sets.value("GAMEPAD/buttonB","Qt::Key_M").toString()]);
