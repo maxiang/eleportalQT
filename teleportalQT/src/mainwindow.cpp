@@ -1073,12 +1073,12 @@ void MainWindow::UpdateModeLable()
             {
                 strMode="Stability";
             }
-            if(vehicle_data->system_status==AS::SYS_ARMED)
+            if(vehicle_data->system_status==AS::SYS_ARMED&&!armCheckBox->isChecked())
             {
                 armCheckBox->setChecked(true);
                 armCheckBox_stateChanged(true);
             }
-            else if(vehicle_data->system_status==AS::SYS_DISARMED)
+            else if(vehicle_data->system_status==AS::SYS_DISARMED&&armCheckBox->isChecked())
             {
                 armCheckBox->setChecked(false);
                 armCheckBox_stateChanged(Qt::Unchecked);
