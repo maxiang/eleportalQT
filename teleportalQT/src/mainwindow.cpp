@@ -954,12 +954,7 @@ void MainWindow::CheckRollOrPitchChang(bool bTimerOut)
 void MainWindow::RestartNetWork()
 {
     rollLPitchCheckTimer.stop();
-    if(armCheckBox->isChecked())
-    {
 
-        armCheckBox->setChecked(false);
-        armCheckBox_stateChanged(Qt::Unchecked);
-    }
    // AS::as_api_deinit();
     std::string ip("192.168.2.");
     AS::as_api_init(ip.c_str(), F_THREAD_ALL);
