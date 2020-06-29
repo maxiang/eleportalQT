@@ -787,7 +787,7 @@ void MainWindow::modeComboBox_currentIndexChanged(int index)
 
     case 1:
         manual_control.buttons = 8;
-        modeComboBox->setText("Stabilise");
+        modeComboBox->setText("Stability");
         break;
 
     case 2:
@@ -1091,7 +1091,7 @@ void MainWindow::UpdateModeLable()
 
 void MainWindow::HandleNewKey(QKeyEvent *event)
 {
-    if(event->key()==Qt::Key_Q)
+    if(event->key()==Qt::Key_O)
     {
         //Disarm
         if(armCheckBox->isChecked())
@@ -1100,7 +1100,7 @@ void MainWindow::HandleNewKey(QKeyEvent *event)
             armCheckBox_stateChanged(false);
         }
     }
-    else if(event->key()==Qt::Key_E)
+    else if(event->key()==Qt::Key_L)
     {
         //arm
         if(!armCheckBox->isChecked())
