@@ -1118,32 +1118,26 @@ void MainWindow::HandleNewKey(QKeyEvent *event)
     else if(event->key()==Qt::Key_H)
     {
         //Depth Hold Mode
-        if (armCheckBox->isChecked()&&
-            AS::as_api_check_vehicle(currentVehicle))
-        {
-            AS::as_api_set_mode(currentVehicle,AS::ALT_HOLD);
+
+          AS::as_api_set_mode(currentVehicle,AS::ALT_HOLD);
             modeComboBox->setText("Depth hold");
-        }
+
     }
     else if(event->key()==Qt::Key_B)
     {
         //Stablilize
-        if (armCheckBox->isChecked()&&
-            AS::as_api_check_vehicle(currentVehicle))
-        {
+
             AS::as_api_set_mode(currentVehicle,AS::STABILIZE);
             modeComboBox->setText("Stability");
-        }
+
     }
     else if(event->key()==Qt::Key_M)
     {
         //Manual
-        if (armCheckBox->isChecked()&&
-            AS::as_api_check_vehicle(currentVehicle))
-        {
+
             AS::as_api_set_mode(currentVehicle,AS::MANUAL);
             modeComboBox->setText("Manual");
-        }
+
     }
 }
 
