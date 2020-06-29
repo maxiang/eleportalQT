@@ -51,10 +51,10 @@ MainWindow::MainWindow(QWidget *parent)
 
     //SETUP MISC VARIABLES
 
-    m_modeIndex = 2;  
-    IdleTime = 1;   
+    m_modeIndex = 1;
+    IdleTime = 1;
     firstRun = false;
-   
+
 
     //SETUP VIDEO AND TOOLBAR
 
@@ -65,7 +65,7 @@ MainWindow::MainWindow(QWidget *parent)
     //SETUP FOCUS POLICY
 
     setFocusPolicy(Qt::StrongFocus);
-    setFocus();                     
+    setFocus();
 
     LoadInIConfig();
     InitGamePad();
@@ -97,16 +97,16 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
-	//ON SHUTDOWN DISARM ROBOT
+    //ON SHUTDOWN DISARM ROBOT
 
-	armCheckBox->setChecked(false);
-	armCheckBox_stateChanged(Qt::Unchecked);
+    armCheckBox->setChecked(false);
+    armCheckBox_stateChanged(Qt::Unchecked);
     delete ui;
 }
 
 void MainWindow::setupToolBars()
 {
-	//SETUP TOOLBAR
+    //SETUP TOOLBAR
 
     QList<QAction *> actionListDisarm;
     ui->vehicleToolBar->setFocusPolicy(Qt::NoFocus);
@@ -140,7 +140,7 @@ void MainWindow::setupToolBars()
     SonarlValue->setFocusPolicy(Qt::NoFocus);
 
     QLabel *yawLabel = new QLabel("Compass: ", this);
-    yawLabel->setFocusPolicy(Qt::NoFocus);  
+    yawLabel->setFocusPolicy(Qt::NoFocus);
     yawLabelValue = new QLabel("0.00", this);
     yawLabelValue->setFocusPolicy(Qt::NoFocus);
 
@@ -153,7 +153,7 @@ void MainWindow::setupToolBars()
     rollLabel->setFocusPolicy(Qt::NoFocus);
     rollLabelValue = new QLabel("0.00", this);
     rollLabelValue->setFocusPolicy(Qt::NoFocus);
-  
+
 
     //HIDE UNUSED ROLL & PITCH VALUES
 
@@ -219,7 +219,7 @@ void MainWindow::on_modeBt_clicked(){
     */
     //add new 20200629
     QKeyEvent* event=nullptr;
-    if(modeComboBox->text()=="Depth hold")
+    if(modeComboBox->text()=="Depth Hold")
     {
         event=new QKeyEvent(QEvent::KeyPress,Qt::Key_B, Qt::NoModifier);
     }
@@ -254,23 +254,23 @@ void MainWindow::setupTimer()
 
 void MainWindow::updateVehicleData()
 {
-	//UPDATES ROBOT VARIABLES
+    //UPDATES ROBOT VARIABLES
 
     if (!AS::as_api_check_vehicle(currentVehicle))
     {
         return;
     }
 
-	if (!firstRun)
-	{
-		//CHANGE MODE TO DEPTH HOLD ON STARTUP
+    if (!firstRun)
+    {
+        //CHANGE MODE TO STABALIZE ON STARTUP
 
-         	armCheckBox->setChecked(false);
+            armCheckBox->setChecked(false);
             armCheckBox_stateChanged(true);
            // modeComboBox_currentIndexChanged(m_modeIndex);
-		    firstRun = true;
+            firstRun = true;
             QGuiApplication::sendEvent(this,new QKeyEvent(QEvent::KeyPress,Qt::Key_B, Qt::NoModifier));
-	}
+    }
 
     AS::as_api_get_vehicle_data2(currentVehicle, vehicle_data);
 
@@ -310,15 +310,15 @@ void MainWindow::updateVehicleData()
     }
     //IF USER IS IDLE FOR 180 SEC DISARM ROBOT
 
-        LASTINPUTINFO LastInput = {}; 
-        LastInput.cbSize = sizeof(LastInput); 
-        ::GetLastInputInfo(&LastInput); 
+        LASTINPUTINFO LastInput = {};
+        LastInput.cbSize = sizeof(LastInput);
+        ::GetLastInputInfo(&LastInput);
         uint IdleTime = (::GetTickCount() - LastInput.dwTime)/1000;
         if ((IdleTime > iIdleSetting) == true)
         {
             armCheckBox->setChecked(false);
             armCheckBox_stateChanged(Qt::Unchecked);
-            
+
         }
     CheckRollOrPitchChang(false);
     UpdateModeLable();
@@ -402,7 +402,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
             armCheckBox_stateChanged(true);
             return;
          }
-        
+
         qDebug() << "You Pressed Key W";
         pressedKey.W = true;
         manual_control.z = keyControlValue.upward;		//SEND COMMAND TO ROBOT
@@ -434,15 +434,15 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
         pressedKey.A = true;
         if (m_modeIndex == 0)			//CHECK MODE OF ROBOT AND GIVE CORRECT VALUE BASED ON MODE
         {
-            manual_control.r = keyControlValue.turnLeftM;     
+            manual_control.r = keyControlValue.turnLeftM;
         }
         else if (m_modeIndex == 1)
         {
-            manual_control.r = keyControlValue.turnLeft;     
+            manual_control.r = keyControlValue.turnLeft;
         }
         else if (m_modeIndex == 2)
         {
-            manual_control.r = keyControlValue.turnLeft;     
+            manual_control.r = keyControlValue.turnLeft;
         }
     }
     else if (event->key() == Qt::Key_D)
@@ -457,15 +457,15 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
         pressedKey.D = true;
         if (m_modeIndex == 0)		//CHECK MODE OF ROBOT AND GIVE CORRECT VALUE BASED ON MODE
         {
-            manual_control.r = keyControlValue.turnRightM;     
+            manual_control.r = keyControlValue.turnRightM;
         }
         else if (m_modeIndex == 1)
         {
-           manual_control.r = keyControlValue.turnRight;     
+           manual_control.r = keyControlValue.turnRight;
         }
         else if (m_modeIndex == 2)
         {
-            manual_control.r = keyControlValue.turnRight;     
+            manual_control.r = keyControlValue.turnRight;
         }
     }
     else if (event->key() == Qt::Key_Up)
@@ -520,7 +520,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
         pressedKey.Right = true;
         manual_control.y = keyControlValue.rightward;		//SEND COMMAND TO ROBOT
     }
-	else if (event->key() == Qt::Key_R)
+    else if (event->key() == Qt::Key_R)
      {
         if (!armCheckBox->isChecked())		//CHECK IF ROBOT IS ARMED, IF NOT REARM ROBOT
         {
@@ -565,7 +565,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
          manual_control.buttons = 8192;		//SEND COMMAND TO ROBOT
      }
 
-     	//KEYBOARD COMMANDS TO CHANGE MODE OF ROBOT
+        //KEYBOARD COMMANDS TO CHANGE MODE OF ROBOT
 
       else if (event->key() == Qt::Key_1)
      {
@@ -596,7 +596,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 
 void MainWindow::keyReleaseEvent(QKeyEvent *event)
 {
- 	//ON KEY RELEASE CHANGE ROBOT COMMANDS BACK TO IDLE VALUES
+    //ON KEY RELEASE CHANGE ROBOT COMMANDS BACK TO IDLE VALUES
 
     if (event->isAutoRepeat())
     {
@@ -712,25 +712,25 @@ void MainWindow::keyReleaseEvent(QKeyEvent *event)
     {
         qDebug() << "You Released Key R";
         manual_control.buttons = 0;
-        
+
     }
  else if (event->key() == Qt::Key_F)
     {
         qDebug() << "You Released Key F";
         manual_control.buttons = 0;
-        
+
     }
  else if (event->key() == Qt::Key_T)
     {
         qDebug() << "You Released Key T";
         manual_control.buttons = 0;
-        
+
     }
  else if (event->key() == Qt::Key_G)
     {
         qDebug() << "You Released Key G";
         manual_control.buttons = 0;
-        
+
     }
     else
     {
@@ -771,6 +771,8 @@ void MainWindow::on_actionMenu_triggered()
 void MainWindow::modeComboBox_currentIndexChanged(int index)
 {
             //CHANGE MODE OF ROBOT WHEN BUTTON IS CLICKED
+
+            //29062020 Adam: So this whole thing doesn't run anymore?
 
     if (!AS::as_api_check_vehicle(currentVehicle))
     {
@@ -956,11 +958,14 @@ void MainWindow::RestartNetWork()
     rollLPitchCheckTimer.stop();
 
    // AS::as_api_deinit();
-    std::string ip("192.168.2.");
-    AS::as_api_init(ip.c_str(), F_THREAD_ALL);
+
+    //29062020 Adam: This doesn't work
+
+    //std::string ip("192.168.2.");
+    //AS::as_api_init(ip.c_str(), F_THREAD_ALL);
 
     //rest connect
-    pingLink->connectLink();
+    //pingLink->connectLink();
     rollLPitchCheckTimer.start();
 }
 
@@ -1057,6 +1062,8 @@ void MainWindow::UpdateModeLable()
     //modeComboBox Manual, Stability, Depth hold
     //F_THREAD_FETCH_FULL_PARAM
 
+/*  29062020 Adam: Removed due to bug
+
     QString strMode="unknown";
     if(vehicle_data)
     {
@@ -1087,6 +1094,7 @@ void MainWindow::UpdateModeLable()
 
     }
     modeComboBox->setText(strMode);
+    */
 }
 
 void MainWindow::HandleNewKey(QKeyEvent *event)
@@ -1113,15 +1121,17 @@ void MainWindow::HandleNewKey(QKeyEvent *event)
     {
         //Depth Hold Mode
             m_modeIndex = 2;
-            AS::as_api_set_mode(currentVehicle,AS::ALT_HOLD);
-            modeComboBox->setText("Depth hold");
+            //AS::as_api_set_mode(currentVehicle,AS::ALT_HOLD);            //29062020 Adam: Trying old system instead
+            manual_control.buttons = 2;
+            modeComboBox->setText("Depth Hold");
 
     }
     else if(event->key()==Qt::Key_B)
     {
         //Stablilize
             m_modeIndex = 1;
-            AS::as_api_set_mode(currentVehicle,AS::STABILIZE);
+            //AS::as_api_set_mode(currentVehicle,AS::STABILIZE);            //29062020 Adam: Trying old system instead
+            manual_control.buttons = 8;
             modeComboBox->setText("Stability");
 
     }
@@ -1129,7 +1139,8 @@ void MainWindow::HandleNewKey(QKeyEvent *event)
     {
         //Manual
             m_modeIndex = 0;
-            AS::as_api_set_mode(currentVehicle,AS::MANUAL);
+            //AS::as_api_set_mode(currentVehicle,AS::MANUAL);					//29062020 Adam: Trying old system instead
+            manual_control.buttons = 2;
             modeComboBox->setText("Manual");
 
     }
