@@ -72,7 +72,7 @@ MainWindow::MainWindow(QWidget *parent)
     //INITILIZE & CONNECT TO ROBOT
 
     std::string ip("192.168.2.");
-    AS::as_api_init(ip.c_str(), F_THREAD_NAMED_VAL_FLOAT | F_STORAGE_NONE);
+    AS::as_api_init(ip.c_str(), F_THREAD_ALL);
     bas_init_status=true;
 
     //START MAIN LOOP
@@ -963,7 +963,7 @@ void MainWindow::RestartNetWork()
     }
    // AS::as_api_deinit();
     std::string ip("192.168.2.");
-    AS::as_api_init(ip.c_str(), F_THREAD_NAMED_VAL_FLOAT|F_STORAGE_NONE);
+    AS::as_api_init(ip.c_str(), F_THREAD_ALL);
 
     //rest connect
     pingLink->connectLink();
@@ -1062,16 +1062,16 @@ void MainWindow::UpdateModeLable()
 {
     //modeComboBox Manual, Stability, Depth hold
     //F_THREAD_FETCH_FULL_PARAM
-    return;
+
     QString strMode="unknown";
     if(vehicle_data)
     {
 
-            if(vehicle_data->custom_mode&AS::ALT_HOLD)
+            if(vehicle_data->custom_mode==AS::ALT_HOLD)
             {
                 strMode="Depth hold";
             }
-            else if(vehicle_data->custom_mode&AS::MANUAL)
+            else if(vehicle_data->custom_mode==AS::MANUAL)
             {
                 strMode="Manual";
             }
@@ -1079,6 +1079,17 @@ void MainWindow::UpdateModeLable()
             {
                 strMode="Stability";
             }
+            if(vehicle_data->system_status==AS::SYS_ARMED)
+            {
+                armCheckBox->setChecked(true);
+                armCheckBox_stateChanged(true);
+            }
+            else if(vehicle_data->system_status==AS::SYS_DISARMED)
+            {
+                armCheckBox->setChecked(false);
+                armCheckBox_stateChanged(Qt::Unchecked);
+            }
+
 
     }
     modeComboBox->setText(strMode);

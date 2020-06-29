@@ -213,6 +213,9 @@
    <property name="text">
     <string>Menu</string>
    </property>
+   <property name="toolTip">
+    <string>Help</string>
+   </property>
   </action>
   <action name="actionSonarGps">
    <property name="checkable">
@@ -226,7 +229,7 @@
     <string>SonarGps</string>
    </property>
    <property name="toolTip">
-    <string>SonarGps</string>
+    <string>Map</string>
    </property>
   </action>
  </widget>

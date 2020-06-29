@@ -19,7 +19,7 @@ PingSensor::PingSensor(QObject *parent) : QObject(parent)
     connect(dynamic_cast<PingParserExt*>(_parser), &PingParserExt::newMessage, this, &PingSensor::handleMessagePrivate,
         Qt::DirectConnection);
     connect(dynamic_cast<PingParserExt*>(_parser), &PingParserExt::parseError, this, &PingSensor::parserErrorsChanged);
-     _periodicRequestTimer.setInterval(1000);
+     _periodicRequestTimer.setInterval(500);
 
      connect(&_periodicRequestTimer, &QTimer::timeout, this, [this] {
          if (!_abstractLink->isWritable()) {
