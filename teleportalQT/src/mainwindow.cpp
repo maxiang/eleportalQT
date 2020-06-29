@@ -266,11 +266,10 @@ void MainWindow::updateVehicleData()
 		//CHANGE MODE TO DEPTH HOLD ON STARTUP
 
          	armCheckBox->setChecked(false);
-            m_modeIndex = 2;
             armCheckBox_stateChanged(true);
            // modeComboBox_currentIndexChanged(m_modeIndex);
 		    firstRun = true;
-            QGuiApplication::sendEvent(this,new QKeyEvent(QEvent::KeyPress,Qt::Key_H, Qt::NoModifier));
+            QGuiApplication::sendEvent(this,new QKeyEvent(QEvent::KeyPress,Qt::Key_B, Qt::NoModifier));
 	}
 
     AS::as_api_get_vehicle_data2(currentVehicle, vehicle_data);
@@ -1118,15 +1117,15 @@ void MainWindow::HandleNewKey(QKeyEvent *event)
     else if(event->key()==Qt::Key_H)
     {
         //Depth Hold Mode
-
-          AS::as_api_set_mode(currentVehicle,AS::ALT_HOLD);
+            m_modeIndex = 2;
+            AS::as_api_set_mode(currentVehicle,AS::ALT_HOLD);
             modeComboBox->setText("Depth hold");
 
     }
     else if(event->key()==Qt::Key_B)
     {
         //Stablilize
-
+            m_modeIndex = 1;
             AS::as_api_set_mode(currentVehicle,AS::STABILIZE);
             modeComboBox->setText("Stability");
 
@@ -1134,7 +1133,7 @@ void MainWindow::HandleNewKey(QKeyEvent *event)
     else if(event->key()==Qt::Key_M)
     {
         //Manual
-
+            m_modeIndex = 0;
             AS::as_api_set_mode(currentVehicle,AS::MANUAL);
             modeComboBox->setText("Manual");
 
