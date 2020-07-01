@@ -32,7 +32,9 @@
 #include "ardusub_io.h"
 #include "ardusub_api.h"
 #include "ardusub_thread.h"
+#ifndef NO_SQL
 #include "ardusub_sqlite.h"
+#endif
 #include "ardusub_log.h"
 #include "ardusub_ini.h"
 

@@ -957,15 +957,14 @@ void MainWindow::RestartNetWork()
 {
     rollLPitchCheckTimer.stop();
 
-   // AS::as_api_deinit();
 
-    //29062020 Adam: This doesn't work
 
-    //std::string ip("192.168.2.");
-    //AS::as_api_init(ip.c_str(), F_THREAD_ALL);
+    AS::as_api_deinit();
+    std::string ip("192.168.2.");
+    AS::as_api_init(ip.c_str(), F_THREAD_ALL);
 
     //rest connect
-    //pingLink->connectLink();
+    pingLink->connectLink();
     rollLPitchCheckTimer.start();
 }
 
@@ -1122,7 +1121,7 @@ void MainWindow::HandleNewKey(QKeyEvent *event)
         //Depth Hold Mode
             m_modeIndex = 2;
             //AS::as_api_set_mode(currentVehicle,AS::ALT_HOLD);            //29062020 Adam: Trying old system instead
-            manual_control.buttons = 2;
+            manual_control.buttons = 4;
             modeComboBox->setText("Depth Hold");
 
     }
@@ -1221,12 +1220,12 @@ void MainWindow::on_axisLeftXChanged(double value)
 void MainWindow::on_axisLeftYChanged(double value)
 {
     QKeyEvent *event=nullptr;
-    if(value>0.8)
+    if(value<-0.8)
     {
         //forward
          event=new QKeyEvent(QEvent::KeyPress,Qt::Key_Up, Qt::NoModifier);
     }
-    else if(value<-0.8)
+    else if(value>0.8)
     {
         //Reverse
         event=new QKeyEvent(QEvent::KeyPress,Qt::Key_Down, Qt::NoModifier);
@@ -1275,12 +1274,12 @@ void MainWindow::on_axisRightXChanged(double value)
 void MainWindow::on_axisRightYChanged(double value)
 {
     QKeyEvent *event=nullptr;
-    if(value>0.8)
+    if(value<-0.8)
     {
         //ascend
          event=new QKeyEvent(QEvent::KeyPress,Qt::Key_W, Qt::NoModifier);
     }
-    else if(value<-0.8)
+    else if(value>0.8)
     {
         //descend
          event=new QKeyEvent(QEvent::KeyPress,Qt::Key_S, Qt::NoModifier);

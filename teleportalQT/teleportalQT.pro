@@ -59,6 +59,7 @@ LIBS += $${GstreamerDir}/lib/intl.lib
 
 INCLUDEPATH += $$PWD/dependencies/inc
 DEPENDPATH  += $$PWD/dependencies/inc
-LIBS += $$PWD/dependencies/lib/libardusub.dll.a
+#LIBS += $$PWD/dependencies/lib/libardusub.dll.a
 include($$PWD/dependencies/ping-cpp.pri)
 include($$PWD/dependencies/link.pri)
+include($$PWD/dependencies/ardusub_api.pri)
