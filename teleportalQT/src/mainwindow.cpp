@@ -113,20 +113,22 @@ void MainWindow::setupToolBars()
     ui->vehicleToolBar->addActions(actionListDisarm);
 
     armCheckBox = new QPushButton(this);
-     armCheckBox->setText("CLICK TO START");
+     armCheckBox->setText("CLICK TO START-ROBOT UNARMED");
      armCheckBox->setCheckable(true);
      armCheckBox->setChecked(false);
-    armCheckBox->setStyleSheet("color: rgb(0, 206, 0);font: 87 12pt \"Arial\";");
+    armCheckBox->setStyleSheet("color: rgb(0, 206, 0);font: 87 12pt \"Arial Black\";");
     armCheckBox->setFocusPolicy(Qt::NoFocus);
     AddToolBarSpacer(ui->vehicleToolBar);
     ui->vehicleToolBar->addWidget(armCheckBox);
     AddToolBarSpacer(ui->vehicleToolBar);
     connect(armCheckBox,SIGNAL(clicked(bool)),
                      this,SLOT(armCheckBox_stateChanged(bool)));
+    UpdateMapTopLableText("NO CONNECTION TO ROBOT");
   //  ui->vehicleToolBar->addSeparator();
     AddToolBarSpacer(ui->tabsToolBar,100);
     QLabel *modeLable = new QLabel(this);
-    modeLable->setText("Mode: ");
+    modeLable->setText("DIVE MODE: ");
+    modeLable->setStyleSheet("font: 87 10pt \"Arial Black\"");
     ui->tabsToolBar->addWidget(modeLable);
     modeComboBox = new QPushButton(this);
     modeComboBox->setText("Depth hold");
@@ -135,10 +137,11 @@ void MainWindow::setupToolBars()
     connect (modeComboBox , SIGNAL(clicked()) , this , SLOT(on_modeBt_clicked()) );
     ui->tabsToolBar->addWidget(modeComboBox);
 
-    SonarLabel=new QLabel("Sonar: ");
-    SonarlValue = new QLabel("21.0m(95%)   ");
+    SonarLabel=new QLabel("SONAR: ");
+    SonarlValue = new QLabel("21.0METERS(95%)   ");
     SonarlValue->setFocusPolicy(Qt::NoFocus);
-
+    SonarLabel->setStyleSheet("font: 87 10pt \"Arial Black\"");
+    SonarlValue->setStyleSheet("font: 87 10pt \"Arial Black\"");
     QLabel *yawLabel = new QLabel("Compass: ", this);
     yawLabel->setFocusPolicy(Qt::NoFocus);
     yawLabelValue = new QLabel("0.00", this);
@@ -164,12 +167,12 @@ void MainWindow::setupToolBars()
     yawLabel->setVisible(false);
     yawLabelValue->setVisible(false);
 
-    QLabel *depthLabel = new QLabel("Depth: ", this);
+    QLabel *depthLabel = new QLabel("DEPTH: ", this);
     depthLabel->setFocusPolicy(Qt::NoFocus);
-    depthLabelValue = new QLabel("0.00(Meters)", this);
+    depthLabelValue = new QLabel("0.00METERS", this);
     depthLabelValue->setFocusPolicy(Qt::NoFocus);
-
-
+    depthLabelValue->setStyleSheet("font: 87 10pt \"Arial Black\"");
+    depthLabel->setStyleSheet("font: 87 10pt \"Arial Black\"");
 
 
     yawLabelValue->setFixedWidth(50);
@@ -296,7 +299,7 @@ void MainWindow::updateVehicleData()
     double yawLableCompass=round(yaw * 100) / 100.0;
     yawLabelValue->setNum(yawLableCompass);
     depthLabelValue->setNum(round(depth * 100) / 100.0);
-    depthLabelValue->setText(depthLabelValue->text()+"(Meters)");
+    depthLabelValue->setText(depthLabelValue->text()+"METERS");
 //    ui->qCompass->setAlt(yawLableCompass);//2020/06/19
     ui->qCompass->setYaw(yawLableCompass);
     if(ui->quickWidget_2->status()==QQuickWidget::Ready)
@@ -838,16 +841,18 @@ void MainWindow::armCheckBox_stateChanged(bool checked)
     {
         qDebug() << "vehicle: " << currentVehicle << "is not ready!";
         armCheckBox->setChecked(false);
-        armCheckBox->setStyleSheet("color: rgb(0, 206, 0);font: 87 12pt \"Arial\";");
-        armCheckBox->setText("CLICK TO START");
+        armCheckBox->setStyleSheet("color: rgb(0, 206, 0);font: 87 12pt \"Arial Black\";");
+        armCheckBox->setText("CLICK TO START-ROBOT UNARMED");
+        UpdateMapTopLableText("NO CONNECTION TO ROBOT");
         return;
     }
 
     if (armCheckBox->isChecked())
     {
         AS::as_api_vehicle_arm(currentVehicle, 1);
-        armCheckBox->setStyleSheet("color: rgb(255, 0, 0);font: 87 12pt \"Arial\";");
-        armCheckBox->setText("ARMED");
+        armCheckBox->setStyleSheet("color: rgb(255, 0, 0);font: 87 12pt \"Arial Black\";");
+        armCheckBox->setText("ROBOT ARMED");
+        UpdateMapTopLableText("");
         qDebug() << "ARM";
     }
     else
@@ -859,8 +864,9 @@ void MainWindow::armCheckBox_stateChanged(bool checked)
         manual_control.buttons = 0;
 
         AS::as_api_vehicle_disarm(currentVehicle, 1);
-        armCheckBox->setStyleSheet("color: rgb(0, 206, 0);font: 87 12pt \"Arial\";");
-        armCheckBox->setText("CLICK TO START");
+        armCheckBox->setStyleSheet("color: rgb(0, 206, 0);font: 87 12pt \"Arial Black\";");
+        armCheckBox->setText("CLICK TO START-ROBOT UNARMED");
+        UpdateMapTopLableText("NO CONNECTION TO ROBOT");
         qDebug() << "DISARM";
     }
 }
@@ -889,6 +895,7 @@ void MainWindow::on_updateConfidence()
     QString strLabelName="Sonar: ";//normal
     QString strNormalsty="color: rgb(0, 0, 0);";
     QTime tcurrent=QTime::currentTime();
+    QString mapTopLableText="";
     if(fDistance>WarnDistance)
     {
         SonarAlarm=false;
@@ -913,27 +920,35 @@ void MainWindow::on_updateConfidence()
         manual_control.z = 500;
         manual_control.r = 0;
         manual_control.buttons = 0;
-
+        mapTopLableText="PROXIMITY ALARM";
         if(PrevTime.msecsTo(tcurrent)/1000>AlarmSetting)
         {
             armCheckBox->setChecked(false);
             armCheckBox_stateChanged(true);
             PrevTime=tcurrent;
         }
+        else
+        {
+            mapTopLableText="OBSTACLE AVOIDANCE ENGAGED-DISARMING ROBOT";
+        }
     }
+    strNormalsty+="font: 87 10pt \"Arial Black\"";
     SonarLabel->setText(strLabelName);
     SonarLabel->setStyleSheet(strNormalsty);
     SonarlValue->setStyleSheet(strNormalsty);
+    UpdateMapTopLableText(mapTopLableText);
 }
 
 void MainWindow::on_statusChanged(QQuickWidget::Status status)
 {
     if(status==QQuickWidget::Ready)
     {
+        bmapState=true;
         qmlTimer=ui->quickWidget_2->rootObject()->findChild<QObject*>("qmlTimer");
         //use ini file Coordinates
         UpdateMapCenterCoordinates(fMapCoordinates);
         UpdateMarkerCoordinates(fMarkerCoordinates);
+        UpdateMapTopLableText(mapTextCache);
 
     }
 }
@@ -1364,6 +1379,27 @@ void MainWindow::UpdateKeyControlValue(bool bPress)
         keyControlValue=keyControlValue_Up;
     }
 }
+
+void MainWindow::UpdateMapTopLableText(QString strTip)
+{
+    mapTextCache=strTip;
+   if(!bmapState)
+       return;
+    QObject* markerItem=ui->quickWidget_2->rootObject()->findChild<QObject*>("mapLabel");
+    if(markerItem)
+    {
+        QString qmlText=markerItem->property("text").value<QString>();
+        if(strTip!=qmlText)
+        {
+            qmlText=strTip;
+            markerItem->setProperty("text",QVariant::fromValue(qmlText));
+        }
+        mapTextCache="";
+    }
+
+
+}
+
 void MainWindow::on_axisLeftXChanged(double value)
 {
     //value rang -1.0 1.0

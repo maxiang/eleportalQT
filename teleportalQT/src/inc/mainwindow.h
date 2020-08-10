@@ -42,6 +42,7 @@ public:
     void InitGamePad();
     void LoadMapingKey();
     void UpdateKeyControlValue(bool bPress=true);
+    void UpdateMapTopLableText(QString strTip);
 private slots:
     void updateVehicleData();
     void manualControl();
@@ -112,6 +113,8 @@ private:
     bool        bardusubCoordinates;// is use  ardusubapi coordinates
     uint         iIdleSetting;
     QGamepad*   _gamepad;
+    QString     mapTextCache;
+    bool        bmapState=false;
     QGamepadKeyNavigation*  _gameKeyNavigation;
     typedef struct
     {

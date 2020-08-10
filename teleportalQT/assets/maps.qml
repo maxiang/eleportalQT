@@ -17,9 +17,9 @@ Item {
         anchors.fill: parent
         plugin: mapPlugin
         center: QtPositioning.coordinate(-31.16581,148.08496)
-        zoomLevel:3
-        property int defzoomLevel:3
-        property int curzoomLevel:3
+        zoomLevel:7
+        property int defzoomLevel:7
+        property int curzoomLevel:7
         property int maxzoomLevel:17
         property int  interval:1
         property bool scalestate: false
@@ -33,6 +33,7 @@ Item {
                   objectName:"qmlTimer"
                   onTriggered:
                   {
+
                       if(!mapview.scalestate)
                       {
                           if(mapview.zoomLevel<mapview.maxzoomLevel)
@@ -79,7 +80,24 @@ Item {
         Component.onCompleted:
         {
            scaleTimer.start();
-        }      
+        }
+
+           Label
+            {
+              id:maptips
+              objectName:"mapLabel"
+              text: ""
+              font.pointSize: 22
+              font.bold: true
+              font.family:"Arial Black"
+              color: "red"
+              horizontalAlignment: Text.AlignHCenter
+              x:parent.width/2-contentWidth/2
+              y:10
+
+            }
+
+
         MapQuickItem
         {
                     zoomLevel: 0
