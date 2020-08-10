@@ -46,6 +46,7 @@ public:
     void handleMessage(const ping_message& msg);
     uint32_t    getDistance();
     uint16_t    getConfidence();
+   static uint16_t _firmwareDefaultPingInterval;
 signals:
     void parserErrorsChanged();
     void connectionClose();
@@ -63,7 +64,6 @@ private:
     static const bool _firmwareDefaultAutoMode;
     static const int _firmwareDefaultGainSetting;
     static const bool _firmwareDefaultPingEnable;
-    static const uint16_t _firmwareDefaultPingInterval;
     static const uint32_t _firmwareDefaultSpeedOfSound;
     static const int _pingMaxFrequency;
     uint16_t _board_voltage;

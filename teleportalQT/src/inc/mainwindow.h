@@ -41,6 +41,7 @@ public:
     void HandleNewKey(QKeyEvent *event);
     void InitGamePad();
     void LoadMapingKey();
+    void UpdateKeyControlValue(bool bPress=true);
 private slots:
     void updateVehicleData();
     void manualControl();
@@ -153,6 +154,14 @@ private:
     } keyControlValue_t;
 
     keyControlValue_t keyControlValue;
+    keyControlValue_t keyControlValue_Press;            //KEYBOARD - KEYPRESS
+    keyControlValue_t keyControlValue_Hold;             //KEYBOARD - KEYHOLD
+    keyControlValue_t keyControlValue_HoldWarning;      //KEYBOARD - KEYHOLD - SONAR WARNING
+    keyControlValue_t keyControlValue_Warning;          //KEYBOARD - KEYPRESS - SONAR WARNING
+    keyControlValue_t keyControlValue_HoldAlarm;        //KEYBOARD - KEYHOLD - SONAR ALARM
+    keyControlValue_t keyControlValue_Alarm;            //KEYBOARD - KEYPRESS - SONAR ALARM
+
+
 
     uint8_t currentVehicle;
     AS::Vehicle_Data_t *vehicle_data;

@@ -6,7 +6,7 @@ const int PingSensor::_pingMaxFrequency = 50;
 const bool PingSensor::_firmwareDefaultAutoMode = true;
 const int PingSensor::_firmwareDefaultGainSetting = 1;
 const bool PingSensor::_firmwareDefaultPingEnable = true;
-const uint16_t PingSensor::_firmwareDefaultPingInterval = 250;
+ uint16_t PingSensor::_firmwareDefaultPingInterval = 250;
 const uint32_t PingSensor::_firmwareDefaultSpeedOfSound = 1500;
 PingSensor::PingSensor(QObject *parent) : QObject(parent)
 {
@@ -19,7 +19,7 @@ PingSensor::PingSensor(QObject *parent) : QObject(parent)
     connect(dynamic_cast<PingParserExt*>(_parser), &PingParserExt::newMessage, this, &PingSensor::handleMessagePrivate,
         Qt::DirectConnection);
     connect(dynamic_cast<PingParserExt*>(_parser), &PingParserExt::parseError, this, &PingSensor::parserErrorsChanged);
-     _periodicRequestTimer.setInterval(500);
+     _periodicRequestTimer.setInterval(PingSensor::_firmwareDefaultPingInterval);
 
      connect(&_periodicRequestTimer, &QTimer::timeout, this, [this] {
          if (!_abstractLink->isWritable()) {
