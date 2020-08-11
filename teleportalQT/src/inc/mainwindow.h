@@ -43,10 +43,12 @@ public:
     void LoadMapingKey();
     void UpdateKeyControlValue(bool bPress=true);
     void UpdateMapTopLableText(QString strTip);
+signals:
+    void SetQMLText();
 private slots:
     void updateVehicleData();
     void manualControl();
-
+    void on_setQmlText();
     void on_actionVideo_triggered();
 
     void on_actionMenu_triggered();

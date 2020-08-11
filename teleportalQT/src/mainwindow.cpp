@@ -76,7 +76,7 @@ MainWindow::MainWindow(QWidget *parent)
     bas_init_status=true;
 
     //START MAIN LOOP
-
+    connect(this,SIGNAL(SetQMLText()),this,SLOT(on_setQmlText()));
     setupTimer();
     videoReceiver->start(ui->quickWidget);
     UpdateMapTopLableText("NO CONNECTION TO ROBOT");
@@ -1379,32 +1379,34 @@ void MainWindow::UpdateKeyControlValue(bool bPress)
     }
 }
 
+void MainWindow::on_setQmlText()
+{
+    QObject* markerItem=ui->quickWidget->rootObject()->findChild<QObject*>("videoLabel");
+    if(markerItem)
+    {
+        QString qmlText=markerItem->property("text").value<QString>();
+        if(mapTextCache!=qmlText)
+        {
+            qmlText=mapTextCache;
+            markerItem->setProperty("text",QVariant::fromValue(qmlText));
+        }
+        mapTextCache="";
+    }
+}
+
 void MainWindow::UpdateMapTopLableText(QString strTip)
 {
 
     mapTextCache=strTip;
     if(bmapState)
         return;
-    auto SetQMlText=[&](){
-        QObject* markerItem=ui->quickWidget->rootObject()->findChild<QObject*>("videoLabel");
-        if(markerItem)
-        {
-            QString qmlText=markerItem->property("text").value<QString>();
-            if(mapTextCache!=qmlText)
-            {
-                qmlText=mapTextCache;
-                markerItem->setProperty("text",QVariant::fromValue(qmlText));
-            }
-            mapTextCache="";
-        }
-    };
-    SetQMlText();
+    emit SetQMLText();
     if(strTip=="OBSTACLE AVOIDANCE ENGAGED - DISARMING ROBOT")
     {
         bmapState=true;
         QTimer::singleShot(5000,this, [&](){
             bmapState=false;
-            SetQMlText();
+            emit SetQMLText();
         });
     }
 
