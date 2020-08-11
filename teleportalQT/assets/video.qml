@@ -15,5 +15,19 @@ Item {
             width: parent.width
             height: parent.height
         }
+        Text
+         {
+           id:tlabel
+           objectName:"videoLabel"
+           text: ""
+           font.pointSize: 22
+           font.bold: true
+           font.family:"Arial Black"
+           color: "red"
+           horizontalAlignment: Text.AlignHCenter
+           x:parent.width/2-contentWidth/2
+           y:10
+
+         }
     }
 }

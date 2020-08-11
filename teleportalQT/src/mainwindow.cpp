@@ -79,7 +79,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     setupTimer();
     videoReceiver->start(ui->quickWidget);
-
+    UpdateMapTopLableText("NO CONNECTION TO ROBOT");
     //Load MAPS
     connect(ui->quickWidget_2,SIGNAL(statusChanged(QQuickWidget::Status)),this,SLOT(on_statusChanged(QQuickWidget::Status)));
     ui->quickWidget_2->setSource(QUrl(QStringLiteral("qrc:/assets/maps.qml")));
@@ -113,7 +113,7 @@ void MainWindow::setupToolBars()
     ui->vehicleToolBar->addActions(actionListDisarm);
 
     armCheckBox = new QPushButton(this);
-     armCheckBox->setText("CLICK TO START-ROBOT UNARMED");
+     armCheckBox->setText("CLICK TO START - ROBOT UNARMED");
      armCheckBox->setCheckable(true);
      armCheckBox->setChecked(false);
     armCheckBox->setStyleSheet("color: rgb(0, 206, 0);font: 87 12pt \"Arial Black\";");
@@ -132,13 +132,14 @@ void MainWindow::setupToolBars()
     ui->tabsToolBar->addWidget(modeLable);
     modeComboBox = new QPushButton(this);
     modeComboBox->setText("Depth hold");
+    modeComboBox->setStyleSheet("font: 87 10pt \"Arial Black\"");
     modeComboBox->setFocusPolicy(Qt::NoFocus);
     modeComboBox->show();
     connect (modeComboBox , SIGNAL(clicked()) , this , SLOT(on_modeBt_clicked()) );
     ui->tabsToolBar->addWidget(modeComboBox);
 
     SonarLabel=new QLabel("SONAR: ");
-    SonarlValue = new QLabel("21.0METERS(95%)   ");
+    SonarlValue = new QLabel("21.0 METERS (95%)   ");
     SonarlValue->setFocusPolicy(Qt::NoFocus);
     SonarLabel->setStyleSheet("font: 87 10pt \"Arial Black\"");
     SonarlValue->setStyleSheet("font: 87 10pt \"Arial Black\"");
@@ -169,7 +170,7 @@ void MainWindow::setupToolBars()
 
     QLabel *depthLabel = new QLabel("DEPTH: ", this);
     depthLabel->setFocusPolicy(Qt::NoFocus);
-    depthLabelValue = new QLabel("0.00METERS", this);
+    depthLabelValue = new QLabel("0.00 METERS", this);
     depthLabelValue->setFocusPolicy(Qt::NoFocus);
     depthLabelValue->setStyleSheet("font: 87 10pt \"Arial Black\"");
     depthLabel->setStyleSheet("font: 87 10pt \"Arial Black\"");
@@ -299,7 +300,7 @@ void MainWindow::updateVehicleData()
     double yawLableCompass=round(yaw * 100) / 100.0;
     yawLabelValue->setNum(yawLableCompass);
     depthLabelValue->setNum(round(depth * 100) / 100.0);
-    depthLabelValue->setText(depthLabelValue->text()+"METERS");
+    depthLabelValue->setText(depthLabelValue->text()+" METERS");
 //    ui->qCompass->setAlt(yawLableCompass);//2020/06/19
     ui->qCompass->setYaw(yawLableCompass);
     if(ui->quickWidget_2->status()==QQuickWidget::Ready)
@@ -842,7 +843,7 @@ void MainWindow::armCheckBox_stateChanged(bool checked)
         qDebug() << "vehicle: " << currentVehicle << "is not ready!";
         armCheckBox->setChecked(false);
         armCheckBox->setStyleSheet("color: rgb(0, 206, 0);font: 87 12pt \"Arial Black\";");
-        armCheckBox->setText("CLICK TO START-ROBOT UNARMED");
+        armCheckBox->setText("CLICK TO START - ROBOT UNARMED");
         UpdateMapTopLableText("NO CONNECTION TO ROBOT");
         return;
     }
@@ -865,7 +866,7 @@ void MainWindow::armCheckBox_stateChanged(bool checked)
 
         AS::as_api_vehicle_disarm(currentVehicle, 1);
         armCheckBox->setStyleSheet("color: rgb(0, 206, 0);font: 87 12pt \"Arial Black\";");
-        armCheckBox->setText("CLICK TO START-ROBOT UNARMED");
+        armCheckBox->setText("CLICK TO START - ROBOT UNARMED");
         UpdateMapTopLableText("NO CONNECTION TO ROBOT");
         qDebug() << "DISARM";
     }
@@ -888,7 +889,7 @@ void MainWindow::on_updateConfidence()
     //SonarlValue
     float fDistance=pingLink->getDistance()/1000.0;
     float fConfidence=pingLink->getConfidence();
-    QString strValue=QString("%1m(%2\%)   ").arg(fDistance).arg(fConfidence);
+    QString strValue=QString("%1 METERS (%2\%)   ").arg(fDistance).arg(fConfidence);
     SonarlValue->setText(strValue);
     if(fConfidence<ConfidenceSetting)
         return;
@@ -926,11 +927,9 @@ void MainWindow::on_updateConfidence()
             armCheckBox->setChecked(false);
             armCheckBox_stateChanged(true);
             PrevTime=tcurrent;
+            mapTopLableText="OBSTACLE AVOIDANCE ENGAGED - DISARMING ROBOT";
         }
-        else
-        {
-            mapTopLableText="OBSTACLE AVOIDANCE ENGAGED-DISARMING ROBOT";
-        }
+
     }
     strNormalsty+="font: 87 10pt \"Arial Black\"";
     SonarLabel->setText(strLabelName);
@@ -948,7 +947,7 @@ void MainWindow::on_statusChanged(QQuickWidget::Status status)
         //use ini file Coordinates
         UpdateMapCenterCoordinates(fMapCoordinates);
         UpdateMarkerCoordinates(fMarkerCoordinates);
-        UpdateMapTopLableText(mapTextCache);
+
 
     }
 }
@@ -1383,9 +1382,9 @@ void MainWindow::UpdateKeyControlValue(bool bPress)
 void MainWindow::UpdateMapTopLableText(QString strTip)
 {
     mapTextCache=strTip;
-   if(!bmapState)
-       return;
-    QObject* markerItem=ui->quickWidget_2->rootObject()->findChild<QObject*>("mapLabel");
+   //if(!bmapState)
+   //    return;
+    QObject* markerItem=ui->quickWidget->rootObject()->findChild<QObject*>("videoLabel");
     if(markerItem)
     {
         QString qmlText=markerItem->property("text").value<QString>();

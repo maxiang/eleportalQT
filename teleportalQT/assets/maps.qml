@@ -82,22 +82,6 @@ Item {
            scaleTimer.start();
         }
 
-           Label
-            {
-              id:maptips
-              objectName:"mapLabel"
-              text: ""
-              font.pointSize: 22
-              font.bold: true
-              font.family:"Arial Black"
-              color: "red"
-              horizontalAlignment: Text.AlignHCenter
-              x:parent.width/2-contentWidth/2
-              y:10
-
-            }
-
-
         MapQuickItem
         {
                     zoomLevel: 0
