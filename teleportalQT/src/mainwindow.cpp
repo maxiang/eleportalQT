@@ -1381,6 +1381,7 @@ void MainWindow::UpdateKeyControlValue(bool bPress)
 
 void MainWindow::UpdateMapTopLableText(QString strTip)
 {
+
     mapTextCache=strTip;
    //if(!bmapState)
    //    return;
@@ -1388,6 +1389,11 @@ void MainWindow::UpdateMapTopLableText(QString strTip)
     if(markerItem)
     {
         QString qmlText=markerItem->property("text").value<QString>();
+        if(strTip=="PROXIMITY ALARM"&&qmlText=="OBSTACLE AVOIDANCE ENGAGED - DISARMING ROBOT")
+        {
+             mapTextCache="";
+             return;
+        }
         if(strTip!=qmlText)
         {
             qmlText=strTip;
