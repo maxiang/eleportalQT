@@ -867,7 +867,7 @@ void MainWindow::armCheckBox_stateChanged(bool checked)
         AS::as_api_vehicle_disarm(currentVehicle, 1);
         armCheckBox->setStyleSheet("color: rgb(0, 206, 0);font: 87 12pt \"Arial Black\";");
         armCheckBox->setText("CLICK TO START - ROBOT UNARMED");
-        UpdateMapTopLableText("NO CONNECTION TO ROBOT");
+        UpdateMapTopLableText("");
         qDebug() << "DISARM";
     }
 }
