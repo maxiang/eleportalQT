@@ -942,7 +942,7 @@ void MainWindow::on_statusChanged(QQuickWidget::Status status)
 {
     if(status==QQuickWidget::Ready)
     {
-        bmapState=true;
+
         qmlTimer=ui->quickWidget_2->rootObject()->findChild<QObject*>("qmlTimer");
         //use ini file Coordinates
         UpdateMapCenterCoordinates(fMapCoordinates);
