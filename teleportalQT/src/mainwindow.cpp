@@ -131,7 +131,7 @@ void MainWindow::setupToolBars()
     modeLable->setStyleSheet("font: 87 10pt \"Arial Black\"");
     ui->tabsToolBar->addWidget(modeLable);
     modeComboBox = new QPushButton(this);
-    modeComboBox->setText("Depth hold");
+    modeComboBox->setText("Depth Hold");
     modeComboBox->setStyleSheet("font: 87 10pt \"Arial Black\"");
     modeComboBox->setFocusPolicy(Qt::NoFocus);
     modeComboBox->show();
@@ -1383,24 +1383,32 @@ void MainWindow::UpdateMapTopLableText(QString strTip)
 {
 
     mapTextCache=strTip;
-   //if(!bmapState)
-   //    return;
-    QObject* markerItem=ui->quickWidget->rootObject()->findChild<QObject*>("videoLabel");
-    if(markerItem)
+    if(bmapState)
+        return;
+    auto SetQMlText=[&](){
+        QObject* markerItem=ui->quickWidget->rootObject()->findChild<QObject*>("videoLabel");
+        if(markerItem)
+        {
+            QString qmlText=markerItem->property("text").value<QString>();
+            if(mapTextCache!=qmlText)
+            {
+                qmlText=mapTextCache;
+                markerItem->setProperty("text",QVariant::fromValue(qmlText));
+            }
+            mapTextCache="";
+        }
+    };
+    SetQMlText();
+    if(strTip=="OBSTACLE AVOIDANCE ENGAGED - DISARMING ROBOT")
     {
-        QString qmlText=markerItem->property("text").value<QString>();
-        if(strTip=="PROXIMITY ALARM"&&qmlText=="OBSTACLE AVOIDANCE ENGAGED - DISARMING ROBOT")
-        {
-             mapTextCache="";
-             return;
-        }
-        if(strTip!=qmlText)
-        {
-            qmlText=strTip;
-            markerItem->setProperty("text",QVariant::fromValue(qmlText));
-        }
-        mapTextCache="";
+        bmapState=true;
+        QTimer::singleShot(5000,this, [&](){
+            bmapState=false;
+            SetQMlText();
+        });
     }
+
+
 
 
 }
