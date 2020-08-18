@@ -998,8 +998,10 @@ void MainWindow::RestartNetWork()
 {
     rollLPitchCheckTimer.stop();
 
-
-
+    vehicleDataUpdateTimer.stop();
+    manualControlTimer.stop();
+    currentVehicle=1;
+    firstRun = false;
     AS::as_api_deinit();
     std::string ip("192.168.2.");
     AS::as_api_init(ip.c_str(), F_THREAD_ALL);
@@ -1007,6 +1009,8 @@ void MainWindow::RestartNetWork()
     //rest connect
     pingLink->connectLink();
     rollLPitchCheckTimer.start();
+    vehicleDataUpdateTimer.start();
+    manualControlTimer.start();
 }
 
 void MainWindow::LoadInIConfig()

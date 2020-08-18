@@ -119,7 +119,7 @@ void PingSensor::request(int id)
         qDebug() << "Can't write in this type of link.";
         return;
     }
-    qDebug() << "Requesting:" << id;
+    //qDebug() << "Requesting:" << id;
 
     ping_message m(10);
     m.set_payload_length(0);
