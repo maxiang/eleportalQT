@@ -119,10 +119,13 @@ void as_api_deinit()
             return;
         }
     }
-
     as_thread_stop_all_join();
     as_init_status=FALSE;
     as_api_main_thread=NULL;
+    for (gsize i = 0; i < 255; i++)
+    {
+         g_atomic_int_set(vehicle_status + i,SYS_UN_INIT );
+    }
 }
 
 /**
