@@ -12,6 +12,7 @@
 #include <QGamepadKeyNavigation>
 #include "VideoReceiver.h"
 #include "pingsensor.h"
+#include <QMediaPlayer>
 namespace AS
 {
 #include "ardusub_api.h"
@@ -43,6 +44,7 @@ public:
     void LoadMapingKey();
     void UpdateKeyControlValue(bool bPress=true);
     void UpdateMapTopLableText(QString strTip);
+    void  PlayMediaFileMapText(QString strText);
 signals:
     void SetQMLText();
 private slots:
@@ -118,6 +120,7 @@ private:
     QString     mapTextCache;
     bool        bmapState=false;
     QGamepadKeyNavigation*  _gameKeyNavigation;
+    QMediaPlayer *   player=nullptr;
     typedef struct
     {
         int16_t x;

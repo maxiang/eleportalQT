@@ -3,6 +3,7 @@
 #include <QMetaObject>
 #include <QGeoCoordinate>
 #include <QGamepadManager>
+#include <QMediaPlayer>
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -868,6 +869,7 @@ void MainWindow::armCheckBox_stateChanged(bool checked)
         armCheckBox->setStyleSheet("color: rgb(0, 206, 0);font: 87 12pt \"Arial Black\";");
         armCheckBox->setText("CLICK TO START - ROBOT UNARMED");
         UpdateMapTopLableText("");
+        PlayMediaFileMapText("Disarm");
         qDebug() << "DISARM";
     }
 }
@@ -1421,6 +1423,30 @@ void MainWindow::UpdateMapTopLableText(QString strTip)
 
 
 
+}
+
+void MainWindow::PlayMediaFileMapText(QString strText)
+{
+    if(!player)
+    {
+        player = new QMediaPlayer;
+    }
+    QUrl fileUrl;//local or net
+    if(strText=="Disarm")
+    {
+        fileUrl=QUrl("qrc:/assets/mp3/translate_tts.mp3");
+    }
+    else if(strText=="arm")
+    {
+        fileUrl=QUrl::fromLocalFile("/Users/me/Music/coolsong.mp3");
+    }
+    else if(strText=="xxx")
+    {
+        //fileUrl=QUrl("http://");
+    }
+    player->setMedia(fileUrl);
+    player->setVolume(50);
+    player->play();
 }
 
 void MainWindow::on_axisLeftXChanged(double value)

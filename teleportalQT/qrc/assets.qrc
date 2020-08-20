@@ -12,5 +12,6 @@
         <file>../assets/icons/help.png</file>
         <file>../assets/icons/map.png</file>
         <file>../assets/icons/rovicon2.png</file>
+        <file>../assets/mp3/translate_tts.mp3</file>
     </qresource>
 </RCC>

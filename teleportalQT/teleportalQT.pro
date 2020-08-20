@@ -1,4 +1,4 @@
-QT       += core gui quickwidgets qml network positioning gamepad
+QT       += core gui quickwidgets qml network positioning gamepad multimedia
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
