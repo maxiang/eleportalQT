@@ -1004,6 +1004,14 @@ void MainWindow::RestartNetWork()
     firstRun = false;
     AS::as_api_deinit();
     std::string ip("192.168.2.");
+    //disarm
+    bool bCheck=armCheckBox->isChecked();
+    if(bCheck)
+    {
+        armCheckBox->setChecked(false);
+        armCheckBox_stateChanged(Qt::Unchecked);
+    }
+
     AS::as_api_init(ip.c_str(), F_THREAD_ALL);
 
     //rest connect
@@ -1011,6 +1019,12 @@ void MainWindow::RestartNetWork()
     rollLPitchCheckTimer.start();
     vehicleDataUpdateTimer.start();
     manualControlTimer.start();
+    //reset arm
+    if(bCheck)
+    {
+        armCheckBox->setChecked(true);
+        armCheckBox_stateChanged(Qt::Checked);
+    }
 }
 
 void MainWindow::LoadInIConfig()
