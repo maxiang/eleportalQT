@@ -4,6 +4,7 @@
 #include <QGeoCoordinate>
 #include <QGamepadManager>
 #include <QMediaPlayer>
+#include "SecureFileUploader.h"
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -1208,7 +1209,11 @@ void MainWindow::LoadInIConfig()
     PingSensor::_firmwareDefaultPingInterval=sets.value("SONAR/PingInterval").toInt();
     iIdleSetting=sets.value("MISC/IdleSetting").toUInt();
 
-
+    strTakPhontoName=sets.value("MISC/TakPhontoName").toString();
+    strRemoteDir=sets.value("MISC/RemoteDir").toString();
+    strHost=sets.value("MISC/host").toString();
+    strUser=sets.value("MISC/user").toString();
+    strPass=sets.value("MISC/pass").toString();
 }
 
 void MainWindow::UpdateMapCenterCoordinates(QStringList coord)
@@ -1643,5 +1648,8 @@ void MainWindow::on_TakePhoto_clicked()
 {
     QScreen* scr=this->screen();
     QPixmap result = scr->grabWindow(this->winId());
-    result.save("temp.png");
+    result.save(strTakPhontoName);
+    static  SecureFileUploader sftp;
+    sftp.upload(strTakPhontoName,strRemoteDir,strHost,strUser,strPass);
+
 }

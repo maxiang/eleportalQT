@@ -21,13 +21,15 @@ SOURCES += \
     src/mainwindow.cpp\
     src/pingsensor.cpp \
     src/qFlightInstruments.cpp\
-    src/VideoReceiver.cpp
+    src/VideoReceiver.cpp \
+    src/securefileuploader.cpp
 
 HEADERS += \
     src/inc/mainwindow.h\
     src/inc/VideoReceiver.h\
     src/inc/qFlightInstruments.h \
-    src/inc/pingsensor.h
+    src/inc/pingsensor.h\
+    src/inc/securefileuploader.h
 
 FORMS += \
     ui/mainwindow.ui
@@ -63,3 +65,10 @@ DEPENDPATH  += $$PWD/dependencies/inc
 include($$PWD/dependencies/ping-cpp.pri)
 include($$PWD/dependencies/link.pri)
 include($$PWD/dependencies/ardusub_api.pri)
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/dependencies/qssh/lib/ -lQSsh
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/dependencies/qssh/lib/ -lQSshd
+else:unix: LIBS += -L$$PWD/dependencies/qssh/lib/ -lQSsh
+
+INCLUDEPATH += $$PWD/dependencies/qssh/include
+DEPENDPATH += $$PWD/dependencies/qssh/include

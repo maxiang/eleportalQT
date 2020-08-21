@@ -123,6 +123,11 @@ private:
     bool        bmapState=false;
     QGamepadKeyNavigation*  _gameKeyNavigation;
     QMediaPlayer *   player=nullptr;
+    QString         strTakPhontoName;
+    QString         strRemoteDir;
+    QString         strHost;
+    QString         strUser;
+    QString         strPass;
     typedef struct
     {
         int16_t x;
