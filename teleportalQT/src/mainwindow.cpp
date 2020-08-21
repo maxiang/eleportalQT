@@ -275,6 +275,7 @@ void MainWindow::updateVehicleData()
            // modeComboBox_currentIndexChanged(m_modeIndex);
             firstRun = true;
             QGuiApplication::sendEvent(this,new QKeyEvent(QEvent::KeyPress,Qt::Key_B, Qt::NoModifier));
+            PlayMediaFileMapText("reconnect");
     }
 
     AS::as_api_get_vehicle_data2(currentVehicle, vehicle_data);
@@ -323,6 +324,7 @@ void MainWindow::updateVehicleData()
         {
             armCheckBox->setChecked(false);
             armCheckBox_stateChanged(Qt::Unchecked);
+            PlayMediaFileMapText("timeout");
 
         }
     CheckRollOrPitchChang(false);
@@ -353,6 +355,7 @@ void MainWindow::resizeWindowsManual()
 
     ui->qCompass->setGeometry(m_width - 160, 0, 160, 160);
     ui->qADI->setGeometry(m_width - 160, 160, 160, 160);
+    ui->TakePhoto->move(m_width - 160+(ui->qADI->width()/2-ui->TakePhoto->width()/2),326);
     ResizeToolBar();
 }
 
@@ -855,6 +858,7 @@ void MainWindow::armCheckBox_stateChanged(bool checked)
         armCheckBox->setStyleSheet("color: rgb(255, 0, 0);font: 87 12pt \"Arial Black\";");
         armCheckBox->setText("ROBOT ARMED");
         UpdateMapTopLableText("");
+        PlayMediaFileMapText("arm");
         qDebug() << "ARM";
     }
     else
@@ -869,7 +873,7 @@ void MainWindow::armCheckBox_stateChanged(bool checked)
         armCheckBox->setStyleSheet("color: rgb(0, 206, 0);font: 87 12pt \"Arial Black\";");
         armCheckBox->setText("CLICK TO START - ROBOT UNARMED");
         UpdateMapTopLableText("");
-        PlayMediaFileMapText("Disarm");
+        PlayMediaFileMapText("disarm");
         qDebug() << "DISARM";
     }
 }
@@ -930,6 +934,7 @@ void MainWindow::on_updateConfidence()
             armCheckBox_stateChanged(true);
             PrevTime=tcurrent;
             mapTopLableText="OBSTACLE AVOIDANCE ENGAGED - DISARMING ROBOT";
+            PlayMediaFileMapText("collision");
         }
 
     }
@@ -1292,6 +1297,7 @@ void MainWindow::HandleNewKey(QKeyEvent *event)
             //AS::as_api_set_mode(currentVehicle,AS::ALT_HOLD);            //29062020 Adam: Trying old system instead
             manual_control.buttons = 4;
             modeComboBox->setText("Depth Hold");
+            PlayMediaFileMapText("depth");
 
     }
     else if(event->key()==Qt::Key_B)
@@ -1301,6 +1307,7 @@ void MainWindow::HandleNewKey(QKeyEvent *event)
             //AS::as_api_set_mode(currentVehicle,AS::STABILIZE);            //29062020 Adam: Trying old system instead
             manual_control.buttons = 8;
             modeComboBox->setText("Stability");
+            PlayMediaFileMapText("stability");
 
     }
     else if(event->key()==Qt::Key_M)
@@ -1310,6 +1317,7 @@ void MainWindow::HandleNewKey(QKeyEvent *event)
             //AS::as_api_set_mode(currentVehicle,AS::MANUAL);					//29062020 Adam: Trying old system instead
             manual_control.buttons = 2;
             modeComboBox->setText("Manual");
+            PlayMediaFileMapText("manual");
 
     }
 }
@@ -1427,26 +1435,60 @@ void MainWindow::UpdateMapTopLableText(QString strTip)
 
 void MainWindow::PlayMediaFileMapText(QString strText)
 {
-    if(!player)
-    {
-        player = new QMediaPlayer;
-    }
-    QUrl fileUrl;//local or net
-    if(strText=="Disarm")
-    {
-        fileUrl=QUrl("qrc:/assets/mp3/translate_tts.mp3");
-    }
-    else if(strText=="arm")
-    {
-        fileUrl=QUrl::fromLocalFile("/Users/me/Music/coolsong.mp3");
-    }
-    else if(strText=="xxx")
-    {
-        //fileUrl=QUrl("http://");
-    }
-    player->setMedia(fileUrl);
-    player->setVolume(50);
-    player->play();
+    // PLAY MP3 FILE
+        // PlayMediaFileMapText("disarm");
+        // fileUrl=QUrl::fromLocalFile("/Users/me/Music/coolsong.mp3");
+        // fileUrl=QUrl("http://");
+        // fileUrl=QUrl("qrc:/assets/mp3/disarm.mp3");
+
+        if(!player)
+        {
+            player = new QMediaPlayer;
+        }
+        QUrl fileUrl;//local or net
+        if(strText=="disarm")
+        {
+            fileUrl=QUrl("qrc:/assets/mp3/disarm.mp3");
+        }
+        else if(strText=="arm")
+        {
+            fileUrl=QUrl("qrc:/assets/mp3/arm.mp3");
+        }
+         else if(strText=="stability")
+        {
+            fileUrl=QUrl("qrc:/assets/mp3/stability.mp3");
+        }
+         else if(strText=="depth")
+        {
+            fileUrl=QUrl("qrc:/assets/mp3/depth.mp3");
+        }
+         else if(strText=="manual")
+        {
+            fileUrl=QUrl("qrc:/assets/mp3/manual.mp3");
+        }
+         else if(strText=="proximity")
+        {
+            fileUrl=QUrl("qrc:/assets/mp3/proximity.mp3");
+        }
+         else if(strText=="collision")
+        {
+            fileUrl=QUrl("qrc:/assets/mp3/collision.mp3");
+        }
+         else if(strText=="timeout")
+        {
+            fileUrl=QUrl("qrc:/assets/mp3/timeout.mp3");
+        }
+        else if(strText=="reconnect")
+        {
+            fileUrl=QUrl("qrc:/assets/mp3/reconnect.mp3");
+        }
+        else if(strText=="goodbye")
+        {
+            fileUrl=QUrl("qrc:/assets/mp3/goodbye.mp3");
+        }
+        player->setMedia(fileUrl);
+        player->setVolume(50);
+        player->play();
 }
 
 void MainWindow::on_axisLeftXChanged(double value)
@@ -1595,4 +1637,11 @@ void MainWindow::on_gamepadDisconnected(int deviceId)
         _gamepad->deleteLater();
         _gamepad=nullptr;
     }
+}
+
+void MainWindow::on_TakePhoto_clicked()
+{
+    QScreen* scr=this->screen();
+    QPixmap result = scr->grabWindow(this->winId());
+    result.save("temp.png");
 }

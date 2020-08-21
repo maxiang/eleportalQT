@@ -13,5 +13,16 @@
         <file>../assets/icons/map.png</file>
         <file>../assets/icons/rovicon2.png</file>
         <file>../assets/mp3/translate_tts.mp3</file>
+        <file>../assets/icons/OIP.jpg</file>
+        <file>../assets/mp3/arm.mp3</file>
+        <file>../assets/mp3/collision.mp3</file>
+        <file>../assets/mp3/depth.mp3</file>
+        <file>../assets/mp3/disarm.mp3</file>
+        <file>../assets/mp3/goodbye.mp3</file>
+        <file>../assets/mp3/manual.mp3</file>
+        <file>../assets/mp3/proximity.mp3</file>
+        <file>../assets/mp3/reconnect.mp3</file>
+        <file>../assets/mp3/stability.mp3</file>
+        <file>../assets/mp3/timeout.mp3</file>
     </qresource>
 </RCC>

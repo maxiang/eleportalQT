@@ -83,6 +83,28 @@
          <string notr="true"/>
         </property>
        </widget>
+       <widget class="QPushButton" name="TakePhoto">
+        <property name="geometry">
+         <rect>
+          <x>1050</x>
+          <y>370</y>
+          <width>121</width>
+          <height>61</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">font: 75 12pt &quot;Arial&quot;;</string>
+        </property>
+        <property name="text">
+         <string>Take Photo</string>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>36</width>
+          <height>36</height>
+         </size>
+        </property>
+       </widget>
       </widget>
       <widget class="QWidget" name="menuPage"/>
       <widget class="QWidget" name="mapPage">

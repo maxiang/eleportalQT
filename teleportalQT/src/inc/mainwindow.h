@@ -74,6 +74,8 @@ private slots:
     void on_axisRightYChanged(double value);
     void on_gamepadConnected(int deviceId);
     void on_gamepadDisconnected(int deviceId);
+    void on_TakePhoto_clicked();
+
 private:
     Ui::MainWindow *ui;
 
