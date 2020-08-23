@@ -24,5 +24,10 @@
         <file>../assets/mp3/reconnect.mp3</file>
         <file>../assets/mp3/stability.mp3</file>
         <file>../assets/mp3/timeout.mp3</file>
+        <file>../assets/icons/camera.png</file>
+        <file>../assets/icons/camera_busy.png</file>
+        <file>../assets/icons/camera_normal.png</file>
+        <file>../assets/icons/mute_off.png</file>
+        <file>../assets/icons/mute_on.png</file>
     </qresource>
 </RCC>

@@ -33,15 +33,15 @@ void SecureFileUploader::upload(const QString &localFile, const QString &dest, c
     QFileInfo info(localFile);
 
     m_localFilename = info.canonicalFilePath();
-    m_remoteFilename = dest + "/" + info.fileName();
+    m_remoteFilename = dest + QLatin1Char('/') + info.fileName();
 
     QSsh::SshConnectionParameters params;
-    params.host = host;
-    params.userName = username;
-    params.password = passwd;
-    params.authenticationType = QSsh::SshConnectionParameters::AuthenticationByPassword;
+    params.setHost(host);
+    params.setUserName(username);
+    params.setPassword(passwd);
+    params.authenticationType = QSsh::SshConnectionParameters::AuthenticationTypeTryAllPasswordBasedMethods;
     params.timeout = 30;
-    params.port = 22;
+    params.setPort(22);
 
     m_connection = new QSsh::SshConnection(params, this); // TODO free this pointer!
 
@@ -78,6 +78,7 @@ void SecureFileUploader::onConnected()
 void SecureFileUploader::onConnectionError(QSsh::SshError err)
 {
     qDebug() << "SecureUploader: Connection error" << err;
+    emit SftpEndcomplete();
 }
 
 void SecureFileUploader::onChannelInitialized()
@@ -98,11 +99,13 @@ void SecureFileUploader::onChannelInitialized()
 void SecureFileUploader::onChannelError(const QString &err)
 {
     qDebug() << "SecureUploader: Error: " << err;
+     emit SftpEndcomplete();
 }
 
 void SecureFileUploader::onOpfinished(QSsh::SftpJobId job, const QString &err)
 {
-    qDebug() << "SecureUploader: Finished job #" << job << ":" << (err.isEmpty() ? "OK" : err);
+    qDebug() << "SecureUploader: Finished job #" << job << ":" << (err.isEmpty() ? QStringLiteral("OK") : err);
+     emit SftpEndcomplete();
 }
 
 

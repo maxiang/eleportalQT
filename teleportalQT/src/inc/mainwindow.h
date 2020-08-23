@@ -13,6 +13,7 @@
 #include "VideoReceiver.h"
 #include "pingsensor.h"
 #include <QMediaPlayer>
+#include "SecureFileUploader.h"
 namespace AS
 {
 #include "ardusub_api.h"
@@ -74,7 +75,12 @@ private slots:
     void on_axisRightYChanged(double value);
     void on_gamepadConnected(int deviceId);
     void on_gamepadDisconnected(int deviceId);
-    void on_TakePhoto_clicked();
+
+
+
+
+    void on_actionTakePhoto_triggered();
+
 
 private:
     Ui::MainWindow *ui;
@@ -128,6 +134,10 @@ private:
     QString         strHost;
     QString         strUser;
     QString         strPass;
+    int             strPhotoDelay;
+    bool            bsftpIdle;
+    QTime           tLastUpLoad;
+
     typedef struct
     {
         int16_t x;

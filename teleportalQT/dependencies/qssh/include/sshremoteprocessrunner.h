@@ -39,12 +39,18 @@ namespace Internal {
 class SshRemoteProcessRunnerPrivate;
 } // namespace Internal
 
+/*!
+    \class QSsh::SshRemoteProcessRunner
+
+    \brief Convenience class for running a remote process over an SSH connection.
+*/
+
 class QSSH_EXPORT SshRemoteProcessRunner : public QObject
 {
     Q_OBJECT
 
 public:
-    SshRemoteProcessRunner(QObject *parent = 0);
+    SshRemoteProcessRunner(QObject *parent = nullptr);
     ~SshRemoteProcessRunner();
 
     void run(const QByteArray &command, const SshConnectionParameters &sshParams);
@@ -73,7 +79,7 @@ signals:
     void readyReadStandardError();
     void processClosed(int exitStatus); // values are of type SshRemoteProcess::ExitStatus
 
-private slots:
+private:
     void handleConnected();
     void handleConnectionError(QSsh::SshError error);
     void handleDisconnected();
@@ -81,8 +87,6 @@ private slots:
     void handleProcessFinished(int exitStatus);
     void handleStdout();
     void handleStderr();
-
-private:
     void runInternal(const QByteArray &command, const QSsh::SshConnectionParameters &sshParams);
     void setState(int newState);
 

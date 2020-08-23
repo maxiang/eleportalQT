@@ -38,7 +38,7 @@ public:
                 const QString &username, const QString &passwd);
 
 signals:
-
+    void SftpEndcomplete();
 private slots:
     void onConnected();
     void onConnectionError(QSsh::SshError);

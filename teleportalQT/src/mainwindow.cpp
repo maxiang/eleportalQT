@@ -4,7 +4,7 @@
 #include <QGeoCoordinate>
 #include <QGamepadManager>
 #include <QMediaPlayer>
-#include "SecureFileUploader.h"
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -255,6 +255,8 @@ void MainWindow::setupTimer()
     QObject::connect(&manualControlTimer, &QTimer::timeout, this, &MainWindow::manualControl);
     manualControlTimer.setInterval(50);
     manualControlTimer.start();
+
+
 }
 
 
@@ -356,7 +358,7 @@ void MainWindow::resizeWindowsManual()
 
     ui->qCompass->setGeometry(m_width - 160, 0, 160, 160);
     ui->qADI->setGeometry(m_width - 160, 160, 160, 160);
-    ui->TakePhoto->move(m_width - 160+(ui->qADI->width()/2-ui->TakePhoto->width()/2),326);
+    //ui->TakePhoto->move(m_width - 160+(ui->qADI->width()/2-ui->TakePhoto->width()/2),326);
     ResizeToolBar();
 }
 
@@ -1128,6 +1130,7 @@ void MainWindow::LoadInIConfig()
         sets.setValue("GAMEPAD/buttonB","Qt::Key_M");
 
         sets.setValue("MISC/IdleSetting",180);
+        sets.setValue("MISC/PhotoDelay",5);
     }
 
     fMapCoordinates=sets.value("GPS/MapCoordinates").toStringList();
@@ -1214,6 +1217,7 @@ void MainWindow::LoadInIConfig()
     strHost=sets.value("MISC/host").toString();
     strUser=sets.value("MISC/user").toString();
     strPass=sets.value("MISC/pass").toString();
+    strPhotoDelay=sets.value("MISC/PhotoDelay").toInt();
 }
 
 void MainWindow::UpdateMapCenterCoordinates(QStringList coord)
@@ -1492,7 +1496,15 @@ void MainWindow::PlayMediaFileMapText(QString strText)
             fileUrl=QUrl("qrc:/assets/mp3/goodbye.mp3");
         }
         player->setMedia(fileUrl);
-        player->setVolume(50);
+        if(!ui->actionMute->isChecked())
+        {
+            player->setVolume(50);
+        }
+        else
+        {
+             player->setVolume(0);
+        }
+
         player->play();
 }
 
@@ -1644,12 +1656,35 @@ void MainWindow::on_gamepadDisconnected(int deviceId)
     }
 }
 
-void MainWindow::on_TakePhoto_clicked()
+
+void MainWindow::on_actionTakePhoto_triggered()
 {
+    ui->actionTakePhoto->setDisabled(true);
+    QTimer::singleShot(strPhotoDelay*1000, this,[&]()
+    {
+         ui->actionTakePhoto->setEnabled(true);
+
+    });
     QScreen* scr=this->screen();
     QPixmap result = scr->grabWindow(this->winId());
-    result.save(strTakPhontoName);
-    static  SecureFileUploader sftp;
-    sftp.upload(strTakPhontoName,strRemoteDir,strHost,strUser,strPass);
+    QFileInfo info(strTakPhontoName);
 
+    QString strTime=QDateTime::currentDateTime().toString("yyyyMMddHHmmss");
+    QString strLocaTempFile="sftpfile/";
+    strLocaTempFile+=info.baseName();
+    strLocaTempFile+=strTime;
+    strLocaTempFile+='.';
+    strLocaTempFile+=info.suffix();
+    QDir dir;
+    dir.mkdir("sftpfile");
+
+    result.save(strLocaTempFile);
+    static SecureFileUploader sftp;
+    connect(&sftp,&SecureFileUploader::SftpEndcomplete,this,[&]{
+        bsftpIdle=true;
+
+    });
+    sftp.upload(strLocaTempFile,strRemoteDir,strHost,strUser,strPass);
 }
+
+
