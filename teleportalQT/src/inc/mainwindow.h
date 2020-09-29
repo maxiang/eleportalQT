@@ -187,7 +187,9 @@ private:
     keyControlValue_t keyControlValue_Alarm;            //KEYBOARD - KEYPRESS - SONAR ALARM
 
 
-
+    int32_t             m_devlat=0;
+    int32_t             m_devlon=0;               /*< [degE7] Longitude, expressed*/
+    int32_t             m_devalt=0;
     uint8_t currentVehicle;
     AS::Vehicle_Data_t *vehicle_data;
 

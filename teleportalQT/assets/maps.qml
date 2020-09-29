@@ -68,7 +68,7 @@ Item {
             onClicked:{
                // if(scaleTimer.running)
                // {
-                    scaleTimer.stop();
+        //            scaleTimer.stop(); //20200929
                // }
                // else
                // {
@@ -79,7 +79,7 @@ Item {
 
         Component.onCompleted:
         {
-           scaleTimer.start();
+           //scaleTimer.start();
         }
 
         MapQuickItem

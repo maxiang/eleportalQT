@@ -119,6 +119,9 @@
    <property name="movable">
     <bool>false</bool>
    </property>
+   <property name="allowedAreas">
+    <set>Qt::TopToolBarArea</set>
+   </property>
    <property name="iconSize">
     <size>
      <width>36</width>
@@ -285,6 +288,9 @@
    </property>
    <property name="text">
     <string>TakePhoto</string>
+   </property>
+   <property name="shortcut">
+    <string>C</string>
    </property>
   </action>
  </widget>
