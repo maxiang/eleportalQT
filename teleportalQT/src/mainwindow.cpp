@@ -118,7 +118,15 @@ void MainWindow::setupToolBars()
      armCheckBox->setText("CLICK TO START - ROBOT UNARMED");
      armCheckBox->setCheckable(true);
      armCheckBox->setChecked(false);
-    armCheckBox->setStyleSheet("background:rgb(0, 255, 0);color: rgb(255, 255, 255);font: 87 12pt \"Arial Black\";");
+    armCheckBox->setStyleSheet("border-style: outset;"
+                               "border-width: 1px;"
+                               "border-radius: 2px;"
+                               "border-color: beige;"
+                               "min-width: 10em;"
+                               "padding: 6px;"
+                               "background:rgb(0, 255, 0);"
+                               "color: rgb(255, 255, 255);"
+                               "font: 87 12pt \"Arial Black\";");
     armCheckBox->setFocusPolicy(Qt::NoFocus);
     AddToolBarSpacer(ui->vehicleToolBar);
     ui->vehicleToolBar->addWidget(armCheckBox);
@@ -872,7 +880,16 @@ void MainWindow::armCheckBox_stateChanged(bool checked)
     {
         qDebug() << "vehicle: " << currentVehicle << "is not ready!";
         armCheckBox->setChecked(false);
-        armCheckBox->setStyleSheet("background:rgb(0, 255, 0);color: rgb(255, 255, 255);font: 87 12pt \"Arial Black\";");
+        armCheckBox->setStyleSheet("border-style: outset;"
+                                   "border-width: 1px;"
+                                   "border-radius: 2px;"
+                                   "border-color: beige;"
+                                   "min-width: 10em;"
+                                   "padding: 6px;"
+                                   "background:rgb(0, 255, 0);"
+                                   "color: rgb(255, 255, 255);"
+                                   "font: 87 12pt \"Arial Black\";");
+
         armCheckBox->setText("CLICK TO START - ROBOT UNARMED");
         UpdateMapTopLableText("NO CONNECTION TO ROBOT");
         return;
@@ -881,7 +898,16 @@ void MainWindow::armCheckBox_stateChanged(bool checked)
     if (armCheckBox->isChecked())
     {
         AS::as_api_vehicle_arm(currentVehicle, 1);
-        armCheckBox->setStyleSheet("background:rgb(255, 0, 0);color: rgb(255, 255, 255);font: 87 12pt \"Arial Black\";");
+        armCheckBox->setStyleSheet("border-style: outset;"
+                                   "border-width: 1px;"
+                                   "border-radius: 2px;"
+                                   "border-color: beige;"
+                                   "min-width: 10em;"
+                                   "padding: 6px;"
+                                   "background:rgb(255,0, 0);"
+                                   "color: rgb(255, 255, 255);"
+                                   "font: 87 12pt \"Arial Black\";");
+
         armCheckBox->setText("ROBOT ARMED");
         UpdateMapTopLableText("");
         PlayMediaFileMapText("arm");
@@ -896,7 +922,16 @@ void MainWindow::armCheckBox_stateChanged(bool checked)
         manual_control.buttons = 0;
 
         AS::as_api_vehicle_disarm(currentVehicle, 1);
-        armCheckBox->setStyleSheet("background:rgb(0, 255, 0);color: rgb(255, 255, 255);font: 87 12pt \"Arial Black\";");
+        armCheckBox->setStyleSheet("border-style: outset;"
+                                   "border-width: 1px;"
+                                   "border-radius: 2px;"
+                                   "border-color: beige;"
+                                   "min-width: 10em;"
+                                   "padding: 6px;"
+                                   "background:rgb(0, 255, 0);"
+                                   "color: rgb(255, 255, 255);"
+                                   "font: 87 12pt \"Arial Black\";");
+
         armCheckBox->setText("CLICK TO START - ROBOT UNARMED");
         UpdateMapTopLableText("");
         PlayMediaFileMapText("disarm");
@@ -1156,8 +1191,8 @@ void MainWindow::LoadInIConfig()
         sets.setValue("MISC/PhotoDelay",5);
     }
 
-    fMapCoordinates=sets.value("GPS/MapCoordinates").toStringList();
-    fMarkerCoordinates=sets.value("GPS/MarkerCoordinates").toStringList();
+    fMapCoordinates=sets.value("GPS/MapCoordinates",QStringList{"-14.0094983494893","80.1233232234234"}).toStringList();
+    fMarkerCoordinates=sets.value("GPS/MarkerCoordinates",QStringList{"-14.0094983494893","80.1233232234234"}).toStringList();
     bardusubCoordinates=sets.value("GPS/ardusubCoordinates").toBool();
 
     //keyControlValue
@@ -1266,7 +1301,38 @@ void MainWindow::UpdateModeLable()
 {
     //modeComboBox Manual, Stability, Depth hold
     //F_THREAD_FETCH_FULL_PARAM
+    //"Depth Hold" "Stability" "Manual"
 
+    if(vehicle_data)
+    {
+        if(vehicle_data->custom_mode==AS::ALT_HOLD)
+        {
+             modeComboBox->setText("Depth Hold");
+        }
+        else if(vehicle_data->custom_mode==AS::MANUAL)
+        {
+            modeComboBox->setText("Manual");
+        }
+        else if(vehicle_data->custom_mode==AS::STABILIZE)
+        {
+            modeComboBox->setText("Stability");
+        }
+        if(vehicle_data->system_status==AS::SYS_DISARMED&&armCheckBox->text()!="CLICK TO START - ROBOT UNARMED")
+        {
+            armCheckBox->setStyleSheet("border-style: outset;"
+                                       "border-width: 1px;"
+                                       "border-radius: 2px;"
+                                       "border-color: beige;"
+                                       "min-width: 10em;"
+                                       "padding: 6px;"
+                                       "background:rgb(0, 255, 0);"
+                                       "color: rgb(255, 255, 255);"
+                                       "font: 87 12pt \"Arial Black\";");
+            armCheckBox->setText("CLICK TO START - ROBOT UNARMED");
+            UpdateMapTopLableText("");
+            PlayMediaFileMapText("disarm");
+        }
+    }
 /*  29062020 Adam: Removed due to bug
 
     QString strMode="unknown";
